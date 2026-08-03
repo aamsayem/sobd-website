@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useMemo, useState } from "react";
 import { api } from "@/lib/api";
@@ -14,16 +14,16 @@ export const Route = createFileRoute("/_authenticated/admin/donations")({
 
 type Donation = {
   id: string;
-  donation_code: string;
   donor_name: string;
-  mobile: string;
+  phone: string;
   email: string | null;
   amount: number;
   payment_method: string;
   transaction_id: string;
-  screenshot_url: string | null;
-  note: string | null;
-  status: string;
+  proof_screenshot: number | null;
+  verification_status: string;
+  verified_by: string | null;
+  verified_at: string | null;
   created_at: string;
 };
 
@@ -38,7 +38,7 @@ function DonationsPage() {
   const { data, isLoading } = useQuery({
     queryKey: ["admin-donations"],
     queryFn: async () => {
-      return await api.get<Donation[]>("admin/dashboard/donations/");
+      return await api.get<Donation[]>("submissions/donation-requests/");
     },
   });
 
@@ -48,21 +48,21 @@ function DonationsPage() {
   }, [qc]);
 
   const filtered = useMemo(() => {
-    const list = (data ?? []).filter((d) => status === "all" || d.status === status);
+    const list = (data ?? []).filter((d) => status === "all" || d.verification_status === status);
     if (!q.trim()) return list;
     const s = q.toLowerCase();
     return list.filter((d) =>
-      [d.donor_name, d.mobile, d.transaction_id, d.donation_code, d.payment_method].some(
+      [d.donor_name, d.phone, d.transaction_id, d.payment_method, d.email ?? ""].some(
         (v) => v && v.toString().toLowerCase().includes(s),
       ),
     );
   }, [data, status, q]);
 
   const totalConfirmed = (data ?? [])
-    .filter((d) => d.status === "confirmed")
+    .filter((d) => d.verification_status === "confirmed")
     .reduce((a, d) => a + Number(d.amount || 0), 0);
   const totalPending = (data ?? [])
-    .filter((d) => d.status === "pending")
+    .filter((d) => d.verification_status === "pending")
     .reduce((a, d) => a + Number(d.amount || 0), 0);
 
   const updFn = useServerFn(updateSubmissionStatus);
@@ -70,7 +70,7 @@ function DonationsPage() {
 
   const setSt = async (d: Donation, s: string) => {
     try {
-      await updFn({ data: { table: "donations", id: d.id, status: s } });
+      await updFn({ data: { table: "donation_requests", id: d.id, status: s } });
       toast.success(`Marked ${s}`);
     } catch (error: unknown) {
       toast.error(getErrorMessage(error, "Unable to update donation"));
@@ -79,7 +79,7 @@ function DonationsPage() {
   const remove = async (id: string) => {
     if (!confirm("Delete this donation record?")) return;
     try {
-      await delFn({ data: { table: "donations", id } });
+      await delFn({ data: { table: "donation_requests", id } });
       toast.success("Deleted");
     } catch (error: unknown) {
       toast.error(getErrorMessage(error, "Unable to delete donation"));
@@ -130,7 +130,7 @@ function DonationsPage() {
               className={`px-3.5 py-2 rounded-full text-xs font-semibold capitalize transition-colors ${status === s ? "bg-emerald-600 text-white" : "bg-white border border-emerald-200 text-emerald-800 hover:bg-emerald-50"}`}
             >
               {s}
-              {s !== "all" && data ? ` (${data.filter((d) => d.status === s).length})` : ""}
+              {s !== "all" && data ? ` (${data.filter((d) => d.verification_status === s).length})` : ""}
             </button>
           ))}
         </div>
@@ -162,10 +162,10 @@ function DonationsPage() {
             <tbody>
               {filtered.map((d) => (
                 <tr key={d.id} className="border-t border-emerald-100 hover:bg-emerald-50/30">
-                  <td className="px-4 py-3 font-mono text-xs">{d.donation_code}</td>
+                  <td className="px-4 py-3 font-mono text-xs">{d.id.slice(0, 8)}</td>
                   <td className="px-4 py-3 font-semibold text-emerald-950">
                     {d.donor_name}
-                    <div className="text-xs text-emerald-700 font-normal">{d.mobile}</div>
+                    <div className="text-xs text-emerald-700 font-normal">{d.phone}</div>
                   </td>
                   <td className="px-4 py-3">{d.payment_method}</td>
                   <td className="px-4 py-3 font-mono text-xs">{d.transaction_id}</td>
@@ -173,7 +173,7 @@ function DonationsPage() {
                     ৳ {Number(d.amount).toLocaleString()}
                   </td>
                   <td className="px-4 py-3">
-                    <StatusBadge status={d.status} />
+                    <StatusBadge status={d.verification_status} />
                   </td>
                   <td className="px-4 py-3 text-xs text-emerald-700">
                     {new Date(d.created_at).toLocaleDateString()}
@@ -183,12 +183,12 @@ function DonationsPage() {
                       <IconBtn onClick={() => setView(d)} title="View">
                         <Eye className="h-4 w-4" />
                       </IconBtn>
-                      {d.status !== "confirmed" && (
+                      {d.verification_status !== "confirmed" && (
                         <IconBtn onClick={() => setSt(d, "confirmed")} title="Confirm" tone="green">
                           <CheckCircle2 className="h-4 w-4" />
                         </IconBtn>
                       )}
-                      {d.status !== "rejected" && (
+                      {d.verification_status !== "rejected" && (
                         <IconBtn onClick={() => setSt(d, "rejected")} title="Reject" tone="red">
                           <XCircle className="h-4 w-4" />
                         </IconBtn>
@@ -215,7 +215,7 @@ function DonationsPage() {
             className="bg-white rounded-3xl max-w-lg w-full max-h-[85vh] overflow-y-auto shadow-2xl"
           >
             <div className="sticky top-0 bg-white border-b border-emerald-100 px-6 py-4 flex items-center justify-between">
-              <h3 className="font-bold text-emerald-950">Donation {view.donation_code}</h3>
+              <h3 className="font-bold text-emerald-950">Donation {view.id.slice(0, 8)}</h3>
               <button
                 onClick={() => setView(null)}
                 className="p-1.5 rounded-lg hover:bg-emerald-50"
@@ -226,13 +226,12 @@ function DonationsPage() {
             <div className="p-6 space-y-3 text-sm">
               {[
                 ["Donor", view.donor_name],
-                ["Mobile", view.mobile],
+                ["Phone", view.phone],
                 ["Email", view.email],
                 ["Amount", `৳ ${Number(view.amount).toLocaleString()}`],
                 ["Method", view.payment_method],
                 ["Transaction ID", view.transaction_id],
-                ["Note", view.note],
-                ["Status", view.status],
+                ["Status", view.verification_status],
                 ["Submitted", new Date(view.created_at).toLocaleString()],
               ].map(([k, v]) => (
                 <div
@@ -243,7 +242,7 @@ function DonationsPage() {
                   <div className="col-span-2 text-emerald-950 wrap-break-word">{v || "—"}</div>
                 </div>
               ))}
-              {view.screenshot_url && <ScreenshotPreview path={view.screenshot_url} />}
+              {view.proof_screenshot ? <ScreenshotPreview mediaId={view.proof_screenshot} /> : null}
             </div>
           </div>
         </div>
@@ -252,35 +251,21 @@ function DonationsPage() {
   );
 }
 
-function ScreenshotPreview({ path }: { path: string }) {
-  const [url, setUrl] = useState<string | null>(null);
-  useEffect(() => {
-    let active = true;
-    (async () => {
-      // Legacy rows might contain a full URL — pass through.
-      if (/^https?:\/\//i.test(path)) {
-        if (active) setUrl(path);
-        return;
-      }
-      // Build URL from Django API base or assume path is already a media path
-      const base = import.meta.env.VITE_DJANGO_API_URL ?? "";
-      const candidate = path.startsWith("/") ? `${base}${path}` : `${base}/${path}`;
-      if (active) setUrl(candidate);
-    })();
-    return () => {
-      active = false;
-    };
-  }, [path]);
-  if (!url) return <div className="text-xs text-emerald-700">Loading screenshot…</div>;
+function ScreenshotPreview({ mediaId }: { mediaId: number }) {
+  const { data, isLoading } = useQuery({
+    queryKey: ["media-file", mediaId],
+    queryFn: async () => api.get<{ url: string }>(`media/files/${mediaId}/`),
+  });
+  if (isLoading || !data?.url) return <div className="text-xs text-emerald-700">Loading screenshot…</div>;
   return (
     <div className="space-y-2">
       <img
-        src={url}
+        src={data.url}
         alt="Donation screenshot"
         className="rounded-xl border border-emerald-100 max-h-80 w-full object-contain bg-white"
       />
       <a
-        href={url}
+        href={data.url}
         target="_blank"
         rel="noreferrer"
         className="inline-flex items-center gap-1.5 text-emerald-700 font-semibold text-sm hover:underline"

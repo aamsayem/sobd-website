@@ -136,6 +136,7 @@ export const uploadMedia = createServerFn({ method: "POST" })
     }
     const json = await res.json();
     return {
+      id: json.id,
       path: json.file_path,
       url: json.url,
       size: json.size,
@@ -160,7 +161,13 @@ export const uploadDonationScreenshot = createServerFn({ method: "POST" })
     const res = await djangoFetch("/api/v1/media/files/", { method: "POST", body: form });
     if (!res.ok) throw new Error("Upload failed");
     const json = await res.json();
-    return { path: json.file_path, url: json.url, contentType: json.mime_type || json.file_type, size: json.size };
+    return {
+      id: json.id,
+      path: json.file_path,
+      url: json.url,
+      contentType: json.mime_type || json.file_type,
+      size: json.size,
+    };
   });
 
 export const listMedia = createServerFn({ method: "GET" })

@@ -15,10 +15,13 @@ import {
   Upload,
 } from "lucide-react";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { api } from "@/lib/api";
 import { uploadDonationScreenshot } from "@/lib/media.functions";
 import { useServerFn } from "@tanstack/react-start";
+import { getPublicCampaigns } from "@/lib/public-content.functions";
 import { getErrorMessage } from "@/lib/utils";
 
 export const Route = createFileRoute("/donate")({
@@ -119,6 +122,15 @@ function DonationForm() {
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
+  const [campaignId, setCampaignId] = useState("");
+  const campaignsFn = useServerFn(getPublicCampaigns);
+  const { data: campaignsData } = useQuery({
+    queryKey: ["public-campaigns", "donation-form"],
+    queryFn: () => campaignsFn(),
+  });
+  const campaigns = Array.isArray(campaignsData)
+    ? campaignsData.filter((campaign) => campaign?.status === "active")
+    : [];
   const uploadScreenshot = useServerFn(uploadDonationScreenshot);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -126,14 +138,14 @@ function DonationForm() {
     const form = e.currentTarget;
     const fd = new FormData(form);
     const name = String(fd.get("name") || "").trim();
-    const mobile = String(fd.get("mobile") || "").trim();
+    const phone = String(fd.get("phone") || "").trim();
     const amount = String(fd.get("amount") || "").trim();
     const method = String(fd.get("method") || "").trim();
     const trx = String(fd.get("trx") || "").trim();
-    const note = String(fd.get("note") || "").trim();
+    const campaign = String(fd.get("campaign") || campaignId || "").trim();
     const file = fd.get("screenshot") as File | null;
 
-    if (!name || !mobile || !amount || !method || !trx) {
+    if (!name || !phone || !amount || !method || !trx || !campaign) {
       toast.error("Please fill all required fields");
       return;
     }
@@ -163,7 +175,7 @@ function DonationForm() {
 
     setSubmitting(true);
     try {
-      let screenshot_url: string | null = null;
+      let proofScreenshotId: number | null = null;
       if (file && file.size > 0) {
         try {
           const fileReader = new FileReader();
@@ -181,7 +193,7 @@ function DonationForm() {
               base64,
             },
           });
-          screenshot_url = res.path;
+          proofScreenshotId = Number(res.id);
         } catch (uploadError: unknown) {
           console.error("Screenshot upload failed:", uploadError);
           toast.error(
@@ -193,12 +205,12 @@ function DonationForm() {
       try {
         await api.post("submissions/donation-requests/", {
           donor_name: name,
-          mobile,
+          phone,
           amount: Number(amount),
           payment_method: method,
           transaction_id: trx,
-          note: note || null,
-          screenshot_url,
+          campaign,
+          proof_screenshot: proofScreenshotId,
         });
       } catch (error: unknown) {
         console.error("Donation submit error:", error);
@@ -251,8 +263,8 @@ function DonationForm() {
       <div className="grid sm:grid-cols-2 gap-4">
         <Field label="Donor Name *" name="name" placeholder="Full name" required />
         <Field
-          label="Mobile Number *"
-          name="mobile"
+          label="Phone Number *"
+          name="phone"
           placeholder="01XXXXXXXXX"
           required
           type="tel"
@@ -267,6 +279,33 @@ function DonationForm() {
         />
         <div>
           <label className="block text-xs uppercase tracking-wider font-semibold text-muted-foreground mb-1.5">
+
+      <div>
+        <label className="block text-xs uppercase tracking-wider font-semibold text-muted-foreground mb-1.5">
+          Campaign *
+        </label>
+        <select
+          name="campaign"
+          required
+          value={campaignId}
+          onChange={(e) => setCampaignId(e.target.value)}
+          className="w-full rounded-xl border border-primary/20 bg-white/80 px-3.5 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+        >
+          <option value="" disabled>
+            {campaigns.length > 0 ? "Select a campaign" : "No active campaigns available"}
+          </option>
+          {campaigns.map((campaign: { id?: string; title: string; title_bn?: string | null }) => (
+            <option key={campaign.id ?? campaign.title} value={campaign.id ?? ""}>
+              {campaign.title_bn ? `${campaign.title} · ${campaign.title_bn}` : campaign.title}
+            </option>
+          ))}
+        </select>
+        {campaigns.length === 0 && (
+          <p className="mt-2 text-xs text-amber-700">
+            Add an active campaign in the admin panel before accepting donations.
+          </p>
+        )}
+      </div>
             Payment Method *
           </label>
           <select
@@ -307,19 +346,6 @@ function DonationForm() {
             onChange={(e) => setFileName(e.currentTarget.files?.[0]?.name ?? null)}
           />
         </label>
-      </div>
-
-      <div>
-        <label className="block text-xs uppercase tracking-wider font-semibold text-muted-foreground mb-1.5">
-          Additional Note{" "}
-          <span className="text-muted-foreground/70 normal-case tracking-normal">(Optional)</span>
-        </label>
-        <textarea
-          name="note"
-          rows={3}
-          placeholder="e.g. Donate to Winter Aid / Shokkhom Foundation"
-          className="w-full rounded-xl border border-primary/20 bg-white/80 px-3.5 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
-        />
       </div>
 
       <button
