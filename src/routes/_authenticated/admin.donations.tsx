@@ -13,7 +13,7 @@ export const Route = createFileRoute("/_authenticated/admin/donations")({
 });
 
 type Donation = {
-  id: string;
+  id: string | number;
   donor_name: string;
   phone: string;
   email: string | null;
@@ -162,7 +162,7 @@ function DonationsPage() {
             <tbody>
               {filtered.map((d) => (
                 <tr key={d.id} className="border-t border-emerald-100 hover:bg-emerald-50/30">
-                  <td className="px-4 py-3 font-mono text-xs">{d.id.slice(0, 8)}</td>
+                  <td className="px-4 py-3 font-mono text-xs">{String(d.id).slice(0, 8)}</td>
                   <td className="px-4 py-3 font-semibold text-emerald-950">
                     {d.donor_name}
                     <div className="text-xs text-emerald-700 font-normal">{d.phone}</div>
@@ -215,7 +215,7 @@ function DonationsPage() {
             className="bg-white rounded-3xl max-w-lg w-full max-h-[85vh] overflow-y-auto shadow-2xl"
           >
             <div className="sticky top-0 bg-white border-b border-emerald-100 px-6 py-4 flex items-center justify-between">
-              <h3 className="font-bold text-emerald-950">Donation {view.id.slice(0, 8)}</h3>
+              <h3 className="font-bold text-emerald-950">Donation {String(view.id).slice(0, 8)}</h3>
               <button
                 onClick={() => setView(null)}
                 className="p-1.5 rounded-lg hover:bg-emerald-50"

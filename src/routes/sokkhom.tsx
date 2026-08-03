@@ -416,18 +416,18 @@ function ApplyForm() {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
     const payload = {
-      full_name: String(fd.get("name") || "").trim(),
-      phone: String(fd.get("phone") || "").trim(),
-      address: String(fd.get("address") || "").trim() || null,
-      occupation: String(fd.get("occupation") || "").trim() || null,
-      monthly_income: fd.get("income") ? Number(fd.get("income")) : null,
-      family_condition: String(fd.get("family") || "").trim() || null,
-      support_needed: String(fd.get("support") || "").trim() || null,
+      applicant_name: String(fd.get("name") || "").trim(),
+      father_name: String(fd.get("father_name") || "").trim() || null,
+      mother_name: String(fd.get("mother_name") || "").trim() || null,
+      family_information: String(fd.get("family") || "").trim(),
+      income: fd.get("income") ? Number(fd.get("income")) : 0,
+      occupation: String(fd.get("occupation") || "").trim(),
+      reason: String(fd.get("support") || "").trim(),
     };
     const { toast } = await import("sonner");
 
-    if (!payload.full_name || !payload.phone) {
-      toast.error("Name and phone are required");
+    if (!payload.applicant_name || !payload.family_information || !payload.occupation || !payload.reason) {
+      toast.error("Please fill all required application fields");
       return;
     }
     setSubmitting(true);
@@ -458,13 +458,13 @@ function ApplyForm() {
     <form onSubmit={onSubmit} className="glass-strong rounded-3xl p-6 lg:p-8 shadow-soft space-y-4">
       <div className="grid sm:grid-cols-2 gap-4">
         <Field label="Full name" name="name" required />
-        <Field label="Phone" name="phone" required />
-        <Field label="Address" name="address" required className="sm:col-span-2" />
-        <Field label="Occupation" name="occupation" />
+        <Field label="Father's name" name="father_name" />
+        <Field label="Mother's name" name="mother_name" />
+        <Field label="Occupation" name="occupation" required />
         <Field label="Monthly income (৳)" name="income" type="number" />
         <div className="sm:col-span-2">
           <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-            Family condition
+            Family information
           </label>
           <textarea
             name="family"
@@ -475,7 +475,7 @@ function ApplyForm() {
         </div>
         <div className="sm:col-span-2">
           <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-            Type of support needed
+            Reason for support
           </label>
           <textarea
             name="support"

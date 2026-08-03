@@ -46,7 +46,7 @@ export const getSubmissionCounts = createServerFn({ method: "GET" })
 // ============ Generic status update ============
 const statusSchema = z.object({
   table: z.enum(["volunteer_applications", "sokkhom_applications", "donation_requests", "donations"]),
-  id: z.string().uuid(),
+  id: z.union([z.string().min(1), z.number()]),
   status: z.string().min(1).max(30),
   notes: z.string().max(2000).optional().nullable(),
 });
@@ -58,6 +58,7 @@ export const updateSubmissionStatus = createServerFn({ method: "POST" })
     const djangoFetch = getDjangoFetch(context);
     const userId = getUserId(context);
     const table = data.table as TableName;
+    const id = String(data.id);
     const patch: Record<string, string | null | undefined> = {};
     if (data.notes !== undefined) patch.internal_notes = data.notes;
     if (table === "donation_requests" || table === "donations") {
@@ -69,7 +70,7 @@ export const updateSubmissionStatus = createServerFn({ method: "POST" })
       patch.reviewed_by = userId;
       patch.reviewed_at = new Date().toISOString();
     }
-    const url = `/api/v1/submissions/${getSubmissionPath(table)}/${data.id}/`;
+    const url = `/api/v1/submissions/${getSubmissionPath(table)}/${id}/`;
     const res = await djangoFetch(url, { method: "PATCH", body: JSON.stringify(patch) });
     if (!res.ok) {
       const payload = await res.text();
@@ -105,14 +106,14 @@ export const deleteSubmission = createServerFn({ method: "POST" })
           "donations",
           "contact_messages",
         ]),
-        id: z.string().uuid(),
+        id: z.union([z.string().min(1), z.number()]),
       })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
     const djangoFetch = getDjangoFetch(context);
     const table = getSubmissionPath(data.table as TableName);
-    const res = await djangoFetch(`/api/v1/submissions/${table}/${data.id}/`, { method: "DELETE" });
+    const res = await djangoFetch(`/api/v1/submissions/${table}/${String(data.id)}/`, { method: "DELETE" });
     if (!res.ok) {
       const txt = await res.text();
       throw new Error(txt || "Delete failed");

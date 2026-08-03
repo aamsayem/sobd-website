@@ -42,6 +42,8 @@ type Form = {
   institution: string;
   profession: string;
   skills: string;
+  emergencyContactName: string;
+  emergencyContactPhone: string;
   availability: string;
   interestAreas: string[];
   motivation: string;
@@ -69,6 +71,8 @@ const empty: Form = {
   institution: "",
   profession: "",
   skills: "",
+  emergencyContactName: "",
+  emergencyContactPhone: "",
   availability: "",
   interestAreas: [],
   motivation: "",
@@ -136,8 +140,8 @@ function VolunteerPage() {
         return false;
       }
     } else if (step === 1) {
-      if (!form.phone || !form.presentAddress || !form.district) {
-        toast.error("Phone, present address and district are required.");
+      if (!form.phone || !form.presentAddress || !form.emergencyContactName || !form.emergencyContactPhone) {
+        toast.error("Phone, present address and emergency contact are required.");
         return false;
       }
     } else if (step === 3) {
@@ -161,28 +165,15 @@ function VolunteerPage() {
     try {
       await api.post("submissions/volunteer-applications/", {
         full_name: form.fullName,
-        father_name: form.fatherName || null,
-        mother_name: form.motherName || null,
-        dob: form.dob || null,
-        gender: form.gender || null,
-        nid: form.nid || null,
         blood_group: form.bloodGroup || null,
-        email: form.email || null,
-        phone: form.phone,
-        whatsapp: form.whatsapp || null,
-        facebook: form.facebook || null,
         present_address: form.presentAddress || null,
         permanent_address: form.permanentAddress || null,
-        district: form.district || null,
-        upazilla: form.upazilla || null,
         education: form.education || null,
-        institution: form.institution || null,
-        profession: form.profession || null,
+        occupation: form.profession || null,
         skills: form.skills || null,
-        availability: form.availability || null,
-        interest_areas: form.interestAreas,
-        motivation: form.motivation || null,
-        reference: form.reference || null,
+        nid_or_birth_certificate: form.nid || null,
+        emergency_contact_name: form.emergencyContactName || null,
+        emergency_contact_phone: form.emergencyContactPhone || null,
       });
     } catch (error: unknown) {
       const msg = error instanceof Error ? error.message : "Submission failed";
@@ -350,6 +341,18 @@ function VolunteerPage() {
                   value={form.permanentAddress}
                   onChange={(v) => update("permanentAddress", v)}
                 />
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <Field
+                    label="Emergency Contact Name *"
+                    value={form.emergencyContactName}
+                    onChange={(v) => update("emergencyContactName", v)}
+                  />
+                  <Field
+                    label="Emergency Contact Phone *"
+                    value={form.emergencyContactPhone}
+                    onChange={(v) => update("emergencyContactPhone", v)}
+                  />
+                </div>
                 <div className="grid sm:grid-cols-2 gap-4">
                   <Field
                     label="District *"
