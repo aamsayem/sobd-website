@@ -38,14 +38,13 @@ export interface ApiRequestOptions {
   credentials?: RequestCredentials;
 }
 
-const DEFAULT_API_BASE_URL = `${getApiBaseUrl().replace(/\/+$/, "")}/api/v1`;
-
-const axiosClient = axios.create({
-  baseURL: DEFAULT_API_BASE_URL,
-  headers: {
-    Accept: "application/json",
-  },
-});
+function getAxiosClient() {
+  const baseURL = `${getApiBaseUrl().replace(/\/+$/, "")}/api/v1`;
+  return axios.create({
+    baseURL,
+    headers: { Accept: "application/json" },
+  });
+}
 
 function normalizePath(path: string) {
   if (/^https?:\/\//i.test(path)) return path;
@@ -113,7 +112,7 @@ export async function apiFetch<T = unknown>(path: string, options: ApiRequestOpt
   };
 
   try {
-    const response = await axiosClient.request<T>({
+    const response = await getAxiosClient().request<T>({
       url: normalizePath(path),
       method,
       headers,

@@ -1,5 +1,6 @@
 import { createMiddleware } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
+import { getApiBaseUrl } from "@/lib/api-base-url";
 
 export const requireApiAuth = createMiddleware({ type: "function" }).server(async ({ next }) => {
   const request = getRequest();
@@ -21,12 +22,11 @@ export const requireApiAuth = createMiddleware({ type: "function" }).server(asyn
     throw new Error("Unauthorized: No token provided");
   }
 
-  const requestUrl = request.url ? new URL(request.url) : null;
-  const validateUrl = requestUrl
-    ? new URL("/api/v1/accounts/me/", requestUrl.origin)
-    : new URL("/api/v1/accounts/me/", "http://localhost");
+  // Use the backend API base URL (not the frontend's origin)
+  const apiBase = `${getApiBaseUrl().replace(/\/+$/, "")}/api/v1`;
+  const validateUrl = `${apiBase}/accounts/me/`;
 
-  const response = await fetch(validateUrl.toString(), {
+  const response = await fetch(validateUrl, {
     headers: {
       Authorization: `Bearer ${token}`,
       Accept: "application/json",
@@ -45,7 +45,7 @@ export const requireApiAuth = createMiddleware({ type: "function" }).server(asyn
   const apiFetch = async (input: string, init: RequestInit = {}) => {
     const url = /^https?:\/\//i.test(input)
       ? input
-      : new URL(input.replace(/^\/+/, ""), validateUrl.origin).toString();
+      : new URL(input.replace(/^\/+/, ""), `${apiBase}/`).toString();
     const headers = new Headers(init.headers || {});
     headers.set("Authorization", `Bearer ${token}`);
     headers.set("Accept", "application/json");
