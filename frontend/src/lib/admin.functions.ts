@@ -28,7 +28,11 @@ async function requestJson<T = unknown>(path: string, init: RequestInit = {}) {
     const message = await res.text();
     throw new Error(message || `Request failed: ${res.status}`);
   }
-  return res.json() as Promise<T>;
+  if (res.status === 204) {
+    return { ok: true } as unknown as T;
+  }
+  const text = await res.text();
+  return (text ? JSON.parse(text) : { ok: true }) as T;
 }
 
 export async function getMyRoles() {

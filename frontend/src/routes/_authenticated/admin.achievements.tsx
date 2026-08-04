@@ -223,8 +223,11 @@ function AchievementForm({
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    await onSave(a);
-    setSaving(false);
+    try {
+      await onSave(a);
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
