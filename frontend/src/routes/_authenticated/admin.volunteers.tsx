@@ -72,6 +72,7 @@ function VolunteersPage() {
       await updFn({ data: { table: "volunteer_applications", id: a.id, status: s } });
       toast.success(`Marked ${s}`);
       qc.invalidateQueries({ queryKey: ["admin-volunteers"] });
+      qc.invalidateQueries({ queryKey: ["submission-counts"] });
     } catch (error: unknown) {
       toast.error(getErrorMessage(error, "Unable to update application"));
     }
@@ -83,6 +84,7 @@ function VolunteersPage() {
       await delFn({ data: { table: "volunteer_applications", id } });
       toast.success("Deleted");
       qc.invalidateQueries({ queryKey: ["admin-volunteers"] });
+      qc.invalidateQueries({ queryKey: ["submission-counts"] });
     } catch (error: unknown) {
       toast.error(getErrorMessage(error, "Unable to delete application"));
     }

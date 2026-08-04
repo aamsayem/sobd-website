@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 import {
   Heart,
   Users,
@@ -20,7 +21,7 @@ import {
   Sprout,
 } from "lucide-react";
 import { AnimatedCounter } from "@/components/animated-counter";
-import { getPublicCampaigns } from "@/lib/public-content.functions";
+import { getPublicCampaigns, getPublicSettings } from "@/lib/public-content.functions";
 import heroImage from "@/assets/Hero.png";
 import reliefImage from "@/assets/Activities — Relief.png";
 import educationImage from "@/assets/Activities — Education.png";
@@ -140,13 +141,31 @@ function Home() {
     .filter((c) => c.status === "active")
     .slice(0, 3);
 
+  const { data: dbSettings } = useQuery({
+    queryKey: ["public-settings"],
+    queryFn: () => getPublicSettings(),
+  });
+
+  const settingsMap = useMemo(() => {
+    const map: Record<string, string> = {};
+    if (Array.isArray(dbSettings)) {
+      dbSettings.forEach((item: any) => {
+        map[item.key] = item.value;
+      });
+    }
+    return map;
+  }, [dbSettings]);
+
+  const displayHeroText = settingsMap.home_hero_text || "A youth-led, humanitarian organization, making compassion a reality in Bangladesh through free education, livelihoods, healthcare, sustainable employment, and emergency relief work.";
+  const displayHeroImage = settingsMap.home_hero_image || heroImage;
+
   return (
     <>
       {/* HERO */}
       <section className="relative flex min-h-[88vh] items-center overflow-hidden pt-24 -mt-24">
         <div className="absolute inset-0 -z-10">
           <img
-            src={heroImage}
+            src={displayHeroImage}
             alt="SELFLESS ORGANIZATION BD volunteers serving people in the community"
             className="h-full w-full object-cover object-[65%_center] sm:object-center"
             width={1920}
@@ -173,8 +192,7 @@ function Home() {
               </span>
             </h1>
             <p className="mt-7 text-lg sm:text-xl text-white/95 max-w-2xl leading-relaxed text-left">
-              We are a community of volunteers serving the most vulnerable across Bangladesh — one
-              meal, one classroom, one heartbeat at a time. Your hand makes the next story possible.
+              {displayHeroText}
             </p>
 
             <div className="mt-10 flex flex-wrap justify-start gap-3">

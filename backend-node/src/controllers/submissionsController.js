@@ -3,6 +3,7 @@ const ShokkhomApplication = require("../models/ShokkhomApplication");
 const Donation = require("../models/Donation");
 const ContactMessage = require("../models/ContactMessage");
 const Campaign = require("../models/Campaign");
+const { resolveBodyUrls } = require("../utils/urlResolver");
 
 function getModel(resource) {
   switch (resource) {
@@ -121,6 +122,7 @@ async function createSubmission(req, res, next) {
     }
 
     const body = { ...req.body };
+    await resolveBodyUrls(body);
 
     // Support both CamelCase and snake_case for donations
     if (resource === "donation-requests") {
@@ -180,6 +182,7 @@ async function updateSubmission(req, res, next) {
     }
 
     const body = { ...req.body };
+    await resolveBodyUrls(body);
 
     // Sync status field for volunteer/sokkhom applications
     if (body.status) {

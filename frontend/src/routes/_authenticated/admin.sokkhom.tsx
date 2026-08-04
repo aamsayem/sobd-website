@@ -66,6 +66,7 @@ function SokkhomPage() {
       await updFn({ data: { table: "sokkhom_applications", id: a.id, status: s } });
       toast.success(`Marked ${s.replace("_", " ")}`);
       qc.invalidateQueries({ queryKey: ["admin-sokkhom"] });
+      qc.invalidateQueries({ queryKey: ["submission-counts"] });
     } catch (error: unknown) {
       toast.error(getErrorMessage(error, "Unable to update application status"));
     }
@@ -77,6 +78,7 @@ function SokkhomPage() {
       await delFn({ data: { table: "sokkhom_applications", id } });
       toast.success("Deleted");
       qc.invalidateQueries({ queryKey: ["admin-sokkhom"] });
+      qc.invalidateQueries({ queryKey: ["submission-counts"] });
     } catch (error: unknown) {
       toast.error(getErrorMessage(error, "Unable to delete application"));
     }

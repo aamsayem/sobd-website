@@ -72,6 +72,7 @@ function DonationsPage() {
       await updFn({ data: { table: "donation_requests", id: d.id, status: s } });
       toast.success(`Marked ${s}`);
       qc.invalidateQueries({ queryKey: ["admin-donations"] });
+      qc.invalidateQueries({ queryKey: ["submission-counts"] });
     } catch (error: unknown) {
       toast.error(getErrorMessage(error, "Unable to update donation"));
     }
@@ -82,6 +83,7 @@ function DonationsPage() {
       await delFn({ data: { table: "donation_requests", id } });
       toast.success("Deleted");
       qc.invalidateQueries({ queryKey: ["admin-donations"] });
+      qc.invalidateQueries({ queryKey: ["submission-counts"] });
     } catch (error: unknown) {
       toast.error(getErrorMessage(error, "Unable to delete donation"));
     }

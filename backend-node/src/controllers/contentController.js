@@ -6,6 +6,9 @@ const Gallery = require("../models/Gallery");
 const CommitteeMember = require("../models/CommitteeMember");
 const CommitteePanel = require("../models/CommitteePanel");
 const User = require("../models/User");
+const Activity = require("../models/Activity");
+const SiteSetting = require("../models/SiteSetting");
+const { resolveBodyUrls } = require("../utils/urlResolver");
 const bcrypt = require("bcryptjs");
 
 function getContentModel(resource) {
@@ -27,6 +30,10 @@ function getContentModel(resource) {
       return CommitteeMember;
     case "committee-panels":
       return CommitteePanel;
+    case "activities":
+      return Activity;
+    case "site-settings":
+      return SiteSetting;
     default:
       return null;
   }
@@ -92,6 +99,112 @@ async function seedDatabase() {
     );
     if (others.modifiedCount > 0) {
       console.log(`Demoted ${others.modifiedCount} other administrative user accounts.`);
+    }
+
+    const settingCount = await SiteSetting.countDocuments();
+    if (settingCount === 0) {
+      console.log("Seeding initial site settings...");
+      const initialSettings = [
+        {
+          key: "home_hero_text",
+          value: "A youth-led, humanitarian organization, making compassion a reality in Bangladesh through free education, livelihoods, healthcare, sustainable employment, and emergency relief work.",
+        },
+        {
+          key: "home_hero_image",
+          value: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c",
+        },
+        {
+          key: "sokkhom_hero_image",
+          value: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c",
+        },
+        {
+          key: "sokkhom_bottom_img_1",
+          value: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c",
+        },
+        {
+          key: "sokkhom_bottom_img_2",
+          value: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6",
+        },
+        {
+          key: "sokkhom_bottom_img_3",
+          value: "https://images.unsplash.com/photo-1584515979956-d9f6e5d09982",
+        },
+        {
+          key: "sokkhom_bottom_img_4",
+          value: "https://images.unsplash.com/photo-1464234470489-f177edb58ab8",
+        },
+      ];
+      await SiteSetting.insertMany(initialSettings);
+      console.log("Initial site settings seeded successfully!");
+    }
+
+    const activityCount = await Activity.countDocuments();
+    if (activityCount === 0) {
+      console.log("Seeding initial activities...");
+      const initialActivities = [
+        {
+          title: "Quality Education",
+          title_bn: "শিক্ষা সহায়তা",
+          description: "Empowering minds and building a better tomorrow through inclusive learning support.",
+          image_url: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6",
+          icon_name: "GraduationCap",
+          sort_order: 1,
+          status: "published",
+          is_active: true,
+        },
+        {
+          title: "Food Campaign",
+          title_bn: "খাদ্য সহায়তা",
+          description: "Nutritious meals and compassionate food support for underprivileged children and vulnerable communities.",
+          image_url: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c",
+          icon_name: "HandHeart",
+          sort_order: 2,
+          status: "published",
+          is_active: true,
+        },
+        {
+          title: "Free Medical Camp",
+          title_bn: "বিনামূল্যে চিকিৎসা সেবা",
+          description: "Accessible healthcare, free medicine, and community medical support during emergencies.",
+          image_url: "https://images.unsplash.com/photo-1584515979956-d9f6e5d09982",
+          icon_name: "Stethoscope",
+          sort_order: 3,
+          status: "published",
+          is_active: true,
+        },
+        {
+          title: "Relief Campaign",
+          title_bn: "ত্রাণ কার্যক্রম",
+          description: "Rapid disaster response with food, essentials, and on-ground volunteer support for affected families.",
+          image_url: "https://images.unsplash.com/photo-1464234470489-f177edb58ab8",
+          icon_name: "ShieldCheck",
+          sort_order: 4,
+          status: "published",
+          is_active: true,
+        },
+        {
+          title: "Winter Aid",
+          title_bn: "শীতবস্ত্র বিতরণ",
+          description: "Distributing blankets, warm clothes, and care packages to families across northern Bangladesh every winter.",
+          image_url: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c",
+          icon_name: "Snowflake",
+          sort_order: 5,
+          status: "published",
+          is_active: true,
+        },
+        {
+          title: "Monthly Orphanage & Hifzkhana Meal Program",
+          title_bn: "মাসিক এতিমখানা ও হিফজখানা খাবার প্রকল্প",
+          description: "Providing daily nutritious meals to orphanages and Quran memorization centers every month.",
+          image_url: "https://images.unsplash.com/photo-1542810634-71277d95dcbb",
+          icon_name: "Home",
+          sort_order: 6,
+          status: "published",
+          is_active: true,
+        }
+      ];
+      await Activity.insertMany(initialActivities);
+      console.log("Initial activities seeded successfully!");
     }
 
     const campaignCount = await Campaign.countDocuments();
@@ -252,6 +365,7 @@ async function createContent(req, res, next) {
     }
 
     const body = { ...req.body };
+    await resolveBodyUrls(body);
     if (req.user) {
       body.created_by = req.user._id;
     }
@@ -294,6 +408,7 @@ async function updateContent(req, res, next) {
     }
 
     const body = { ...req.body };
+    await resolveBodyUrls(body);
     if (req.user) {
       body.updated_by = req.user._id;
     }

@@ -68,6 +68,7 @@ function MessagesPage() {
     try {
       await readFn({ data: { id: m.id, is_read: !m.is_read } });
       qc.invalidateQueries({ queryKey: ["admin-messages"] });
+      qc.invalidateQueries({ queryKey: ["submission-counts"] });
     } catch (error: unknown) {
       toast.error(getErrorMessage(error, "Unable to update message"));
     }
@@ -78,6 +79,7 @@ function MessagesPage() {
       await delFn({ data: { table: "contact_messages", id } });
       toast.success("Deleted");
       qc.invalidateQueries({ queryKey: ["admin-messages"] });
+      qc.invalidateQueries({ queryKey: ["submission-counts"] });
     } catch (error: unknown) {
       toast.error(getErrorMessage(error, "Unable to delete message"));
     }

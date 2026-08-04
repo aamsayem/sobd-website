@@ -24,6 +24,8 @@ import {
   Mail,
   Trophy,
   HardDrive,
+  Sprout,
+  Settings,
 } from "lucide-react";
 import logo from "@/assets/logo.png";
 
@@ -40,6 +42,7 @@ const NAV: {
   badgeKey?: "pendingVolunteers" | "pendingSokkhom" | "pendingDonations" | "unreadMessages";
 }[] = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
+  { to: "/admin/settings", label: "Website Settings", icon: Settings },
   {
     to: "/admin/volunteers",
     label: "Volunteer Applications",
@@ -54,6 +57,7 @@ const NAV: {
   },
   { to: "/admin/donations", label: "Donations", icon: DollarSign, badgeKey: "pendingDonations" },
   { to: "/admin/messages", label: "Contact Messages", icon: Mail, badgeKey: "unreadMessages" },
+  { to: "/admin/activities", label: "Activities & Projects", icon: Sprout },
   { to: "/admin/campaigns", label: "Urgent Campaigns", icon: Megaphone },
   { to: "/admin/committee", label: "Committee Members", icon: Users },
   { to: "/admin/gallery", label: "Gallery", icon: Image },

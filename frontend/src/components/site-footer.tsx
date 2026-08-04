@@ -13,7 +13,7 @@ export function SiteFooter() {
               <img
                 src={logo}
                 alt="SELFLESS ORGANIZATION BD"
-                className="h-14 w-14 object-contain bg-white/95 rounded-xl p-1"
+                className="h-12 w-12 object-contain transition-transform hover:scale-105 shrink-0"
               />
               <div>
                 <div className="font-display font-bold text-lg">SELFLESS ORGANIZATION BD</div>

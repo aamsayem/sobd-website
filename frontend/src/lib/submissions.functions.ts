@@ -27,10 +27,10 @@ export async function getSubmissionCounts() {
     results.map(async (r) => (r.ok ? ((await r.json()) as unknown[]) : []) as unknown[]),
   );
   return {
-    pendingVolunteers: (jsons[0]?.length ?? 0) as number,
-    pendingSokkhom: (jsons[1]?.length ?? 0) as number,
-    pendingDonations: (jsons[2]?.length ?? 0) as number,
-    unreadMessages: (jsons[3]?.length ?? 0) as number,
+    pendingVolunteers: (jsons[0] ?? []).filter((a: any) => a.status === "pending").length,
+    pendingSokkhom: (jsons[1] ?? []).filter((a: any) => a.status === "pending" || a.status === "under_review").length,
+    pendingDonations: (jsons[2] ?? []).filter((a: any) => a.status === "pending").length,
+    unreadMessages: (jsons[3] ?? []).filter((a: any) => !a.is_read).length,
     totalVolunteerApps: jsons[0]?.length ?? 0,
     totalDonationsAmount: 0,
   };

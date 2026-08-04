@@ -28,3 +28,11 @@ export async function getPublicReports() {
 export async function getPublicAchievements() {
   return fetchList("/api/v1/content/achievements/");
 }
+
+export async function getPublicActivities() {
+  return fetchList("/api/v1/content/activities/");
+}
+
+export async function getPublicSettings() {
+  return fetchList("/api/v1/content/site-settings/");
+}

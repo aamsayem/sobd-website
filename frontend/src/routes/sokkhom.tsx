@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   Sprout,
   Heart,
@@ -15,6 +16,7 @@ import {
 } from "lucide-react";
 import { AnimatedCounter } from "@/components/animated-counter";
 import { api } from "@/lib/api";
+import { getPublicSettings } from "@/lib/public-content.functions";
 import sokkhomImage from "@/assets/sokkhom-hero.png";
 import foodImage from "@/assets/Activities — Food.png";
 import educationImage from "@/assets/Activities — Education.png";
@@ -90,13 +92,36 @@ function Sokkhom() {
   const target = 25;
   const pct = Math.round((raised / target) * 100);
 
+  const { data: dbSettings } = useQuery({
+    queryKey: ["public-settings"],
+    queryFn: () => getPublicSettings(),
+  });
+
+  const settingsMap = useMemo(() => {
+    const map: Record<string, string> = {};
+    if (Array.isArray(dbSettings)) {
+      dbSettings.forEach((item: any) => {
+        map[item.key] = item.value;
+      });
+    }
+    return map;
+  }, [dbSettings]);
+
+  const displayHeroImage = settingsMap.sokkhom_hero_image || sokkhomImage;
+  const bottomImages = [
+    settingsMap.sokkhom_bottom_img_1 || sokkhomImage,
+    settingsMap.sokkhom_bottom_img_2 || foodImage,
+    settingsMap.sokkhom_bottom_img_3 || educationImage,
+    settingsMap.sokkhom_bottom_img_4 || medicalImage,
+  ];
+
   return (
     <>
       {/* HERO */}
       <section className="relative -mt-24 pt-32 pb-20 overflow-hidden">
         <div className="absolute inset-0 -z-10">
           <img
-            src={sokkhomImage}
+            src={displayHeroImage}
             alt="Shokkhom Foundation"
             className="h-full w-full object-cover"
             width={1600}
@@ -389,7 +414,7 @@ function Sokkhom() {
           <h2 className="font-display text-3xl lg:text-4xl font-bold">From the field</h2>
         </motion.div>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          {[sokkhomImage, foodImage, educationImage, medicalImage].map((src, i) => (
+          {bottomImages.map((src, i) => (
             <motion.img
               key={i}
               {...fade}
