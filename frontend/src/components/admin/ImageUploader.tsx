@@ -253,6 +253,16 @@ export function ImageUploader({
         )}
       </div>
 
+      <div className="mt-2">
+        <input
+          type="url"
+          placeholder="Or paste direct media link (e.g. https://...)"
+          value={value ?? ""}
+          onChange={(e) => onChange(e.target.value)}
+          className="w-full px-3.5 py-2.5 rounded-xl border border-emerald-100 bg-white/80 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400 placeholder:text-emerald-900/40 text-emerald-950 transition-all"
+        />
+      </div>
+
       <input
         ref={inputRef}
         type="file"

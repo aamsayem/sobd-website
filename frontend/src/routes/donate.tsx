@@ -121,7 +121,7 @@ function DonationForm() {
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
-  const [campaignId, setCampaignId] = useState("");
+  const [campaignId, setCampaignId] = useState("general-donation");
   const campaignsFn = getPublicCampaigns;
   const { data: campaignsData } = useQuery({
     queryKey: ["public-campaigns", "donation-form"],
@@ -273,36 +273,31 @@ function DonationForm() {
         />
         <div>
           <label className="block text-xs uppercase tracking-wider font-semibold text-muted-foreground mb-1.5">
-            <div>
-              <label className="block text-xs uppercase tracking-wider font-semibold text-muted-foreground mb-1.5">
-                Campaign *
-              </label>
-              <select
-                name="campaign"
-                required
-                value={campaignId}
-                onChange={(e) => setCampaignId(e.target.value)}
-                className="w-full rounded-xl border border-primary/20 bg-white/80 px-3.5 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
-              >
-                <option value="" disabled>
-                  {campaigns.length > 0 ? "Select a campaign" : "No active campaigns available"}
+            Campaign *
+          </label>
+          <select
+            name="campaign"
+            required
+            value={campaignId}
+            onChange={(e) => setCampaignId(e.target.value)}
+            className="w-full rounded-xl border border-primary/20 bg-white/80 px-3.5 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+          >
+            <option value="general-donation">
+              General Donation · সাধারণ অনুদান
+            </option>
+            {campaigns.map(
+              (campaign: { id?: string; title: string; title_bn?: string | null }) => (
+                <option key={campaign.id ?? campaign.title} value={campaign.id ?? ""}>
+                  {campaign.title_bn
+                    ? `${campaign.title} · ${campaign.title_bn}`
+                    : campaign.title}
                 </option>
-                {campaigns.map(
-                  (campaign: { id?: string; title: string; title_bn?: string | null }) => (
-                    <option key={campaign.id ?? campaign.title} value={campaign.id ?? ""}>
-                      {campaign.title_bn
-                        ? `${campaign.title} · ${campaign.title_bn}`
-                        : campaign.title}
-                    </option>
-                  ),
-                )}
-              </select>
-              {campaigns.length === 0 && (
-                <p className="mt-2 text-xs text-amber-700">
-                  Add an active campaign in the admin panel before accepting donations.
-                </p>
-              )}
-            </div>
+              ),
+            )}
+          </select>
+        </div>
+        <div>
+          <label className="block text-xs uppercase tracking-wider font-semibold text-muted-foreground mb-1.5">
             Payment Method *
           </label>
           <select
