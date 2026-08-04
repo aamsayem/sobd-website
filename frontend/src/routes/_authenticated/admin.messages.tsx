@@ -67,6 +67,7 @@ function MessagesPage() {
   const toggleRead = async (m: Msg) => {
     try {
       await readFn({ data: { id: m.id, is_read: !m.is_read } });
+      qc.invalidateQueries({ queryKey: ["admin-messages"] });
     } catch (error: unknown) {
       toast.error(getErrorMessage(error, "Unable to update message"));
     }
@@ -76,6 +77,7 @@ function MessagesPage() {
     try {
       await delFn({ data: { table: "contact_messages", id } });
       toast.success("Deleted");
+      qc.invalidateQueries({ queryKey: ["admin-messages"] });
     } catch (error: unknown) {
       toast.error(getErrorMessage(error, "Unable to delete message"));
     }

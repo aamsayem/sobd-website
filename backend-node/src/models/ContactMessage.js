@@ -29,6 +29,11 @@ const contactMessageSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    is_read: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
     // BaseModel fields
     created_by: {
       type: mongoose.Schema.Types.ObjectId,

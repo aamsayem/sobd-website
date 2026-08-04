@@ -81,6 +81,7 @@ const campaignSchema = z.object({
   id: z.string().optional(),
   title: z.string().min(1).max(200),
   title_bn: z.string().max(200).optional().nullable(),
+  slug: z.string().optional().nullable(),
   description: z.string().max(5000).optional().nullable(),
   target_amount: z.number().min(0),
   raised_amount: z.number().min(0),

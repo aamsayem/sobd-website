@@ -282,18 +282,12 @@ function DonationForm() {
             onChange={(e) => setCampaignId(e.target.value)}
             className="w-full rounded-xl border border-primary/20 bg-white/80 px-3.5 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
           >
-            <option value="general-donation">
-              General Donation · সাধারণ অনুদান
-            </option>
-            {campaigns.map(
-              (campaign: { id?: string; title: string; title_bn?: string | null }) => (
-                <option key={campaign.id ?? campaign.title} value={campaign.id ?? ""}>
-                  {campaign.title_bn
-                    ? `${campaign.title} · ${campaign.title_bn}`
-                    : campaign.title}
-                </option>
-              ),
-            )}
+            <option value="general-donation">General Donation · সাধারণ অনুদান</option>
+            {campaigns.map((campaign: { id?: string; title: string; title_bn?: string | null }) => (
+              <option key={campaign.id ?? campaign.title} value={campaign.id ?? ""}>
+                {campaign.title_bn ? `${campaign.title} · ${campaign.title_bn}` : campaign.title}
+              </option>
+            ))}
           </select>
         </div>
         <div>

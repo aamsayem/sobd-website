@@ -71,6 +71,7 @@ function DonationsPage() {
     try {
       await updFn({ data: { table: "donation_requests", id: d.id, status: s } });
       toast.success(`Marked ${s}`);
+      qc.invalidateQueries({ queryKey: ["admin-donations"] });
     } catch (error: unknown) {
       toast.error(getErrorMessage(error, "Unable to update donation"));
     }
@@ -80,6 +81,7 @@ function DonationsPage() {
     try {
       await delFn({ data: { table: "donation_requests", id } });
       toast.success("Deleted");
+      qc.invalidateQueries({ queryKey: ["admin-donations"] });
     } catch (error: unknown) {
       toast.error(getErrorMessage(error, "Unable to delete donation"));
     }
@@ -243,7 +245,7 @@ function DonationsPage() {
                   <div className="col-span-2 text-emerald-950 wrap-break-word">{v || "—"}</div>
                 </div>
               ))}
-              {view.proof_screenshot ? <ScreenshotPreview mediaId={view.proof_screenshot} /> : null}
+              {view.proof_screenshot ? <ScreenshotPreview proof={view.proof_screenshot} /> : null}
             </div>
           </div>
         </div>
@@ -252,31 +254,28 @@ function DonationsPage() {
   );
 }
 
-function ScreenshotPreview({ mediaId }: { mediaId: number }) {
-  const { data, isLoading } = useQuery({
-    queryKey: ["media-file", mediaId],
-    queryFn: async () => api.get<{ url: string }>(`media/files/${mediaId}/`),
-  });
-  if (isLoading || !data?.url)
-    return <div className="text-xs text-emerald-700">Loading screenshot…</div>;
+function ScreenshotPreview({ proof }: { proof: any }) {
+  const url = typeof proof === "string" ? proof : (proof?.url ?? "");
+  if (!url) return null;
   return (
     <div className="space-y-2">
       <img
-        src={data.url}
+        src={url}
         alt="Donation screenshot"
         className="rounded-xl border border-emerald-100 max-h-80 w-full object-contain bg-white"
       />
       <a
-        href={data.url}
+        href={url}
         target="_blank"
-        rel="noreferrer"
-        className="inline-flex items-center gap-1.5 text-emerald-700 font-semibold text-sm hover:underline"
+        rel="noopener noreferrer"
+        className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 hover:text-emerald-900"
       >
-        Open full screenshot <ExternalLink className="h-3.5 w-3.5" />
+        Open in new tab
       </a>
     </div>
   );
 }
+
 function StatusBadge({ status }: { status: string }) {
   const c: Record<string, string> = {
     pending: "bg-amber-100 text-amber-800",

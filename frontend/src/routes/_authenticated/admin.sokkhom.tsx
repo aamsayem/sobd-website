@@ -14,13 +14,13 @@ export const Route = createFileRoute("/_authenticated/admin/sokkhom")({
 type App = {
   id: string;
   application_code: string;
-  full_name: string;
-  phone: string;
-  address: string | null;
+  applicant_name: string;
+  father_name: string | null;
+  mother_name: string | null;
   occupation: string | null;
-  monthly_income: number | null;
-  family_condition: string | null;
-  support_needed: string | null;
+  income: number | null;
+  family_information: string | null;
+  reason: string | null;
   status: string;
   created_at: string;
   [k: string]: string | number | boolean | null | undefined;
@@ -52,7 +52,7 @@ function SokkhomPage() {
     if (!q.trim()) return list;
     const s = q.toLowerCase();
     return list.filter((a) =>
-      [a.full_name, a.phone, a.address, a.application_code].some(
+      [a.applicant_name, a.occupation, a.application_code].some(
         (v) => v && v.toString().toLowerCase().includes(s),
       ),
     );
@@ -65,6 +65,7 @@ function SokkhomPage() {
     try {
       await updFn({ data: { table: "sokkhom_applications", id: a.id, status: s } });
       toast.success(`Marked ${s.replace("_", " ")}`);
+      qc.invalidateQueries({ queryKey: ["admin-sokkhom"] });
     } catch (error: unknown) {
       toast.error(getErrorMessage(error, "Unable to update application status"));
     }
@@ -75,6 +76,7 @@ function SokkhomPage() {
     try {
       await delFn({ data: { table: "sokkhom_applications", id } });
       toast.success("Deleted");
+      qc.invalidateQueries({ queryKey: ["admin-sokkhom"] });
     } catch (error: unknown) {
       toast.error(getErrorMessage(error, "Unable to delete application"));
     }
@@ -126,7 +128,7 @@ function SokkhomPage() {
               <tr>
                 <th className="text-left px-4 py-3">Code</th>
                 <th className="text-left px-4 py-3">Applicant</th>
-                <th className="text-left px-4 py-3">Phone</th>
+                <th className="text-left px-4 py-3">Occupation</th>
                 <th className="text-left px-4 py-3">Income (৳)</th>
                 <th className="text-left px-4 py-3">Status</th>
                 <th className="text-left px-4 py-3">Date</th>
@@ -137,10 +139,10 @@ function SokkhomPage() {
               {filtered.map((a) => (
                 <tr key={a.id} className="border-t border-emerald-100 hover:bg-emerald-50/30">
                   <td className="px-4 py-3 font-mono text-xs">{a.application_code}</td>
-                  <td className="px-4 py-3 font-semibold text-emerald-950">{a.full_name}</td>
-                  <td className="px-4 py-3">{a.phone}</td>
+                  <td className="px-4 py-3 font-semibold text-emerald-950">{a.applicant_name}</td>
+                  <td className="px-4 py-3">{a.occupation}</td>
                   <td className="px-4 py-3">
-                    {a.monthly_income ? Number(a.monthly_income).toLocaleString() : "—"}
+                    {a.income ? Number(a.income).toLocaleString() : "—"}
                   </td>
                   <td className="px-4 py-3">
                     <StatusBadge status={a.status} />
@@ -229,13 +231,13 @@ function DetailModal({ app, onClose }: { app: App; onClose: () => void }) {
   const fields: [string, string | number | null | undefined][] = [
     ["Application code", app.application_code],
     ["Status", app.status],
-    ["Full name", app.full_name],
-    ["Phone", app.phone],
-    ["Address", app.address],
+    ["Full name", app.applicant_name],
+    ["Father's name", app.father_name],
+    ["Mother's name", app.mother_name],
     ["Occupation", app.occupation],
-    ["Monthly income", app.monthly_income],
-    ["Family condition", app.family_condition],
-    ["Support needed", app.support_needed],
+    ["Monthly income", app.income],
+    ["Family condition", app.family_information],
+    ["Support needed", app.reason],
     ["Submitted", new Date(app.created_at).toLocaleString()],
   ];
   return (

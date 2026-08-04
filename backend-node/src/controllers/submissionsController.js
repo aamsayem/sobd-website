@@ -47,6 +47,12 @@ async function getSubmissions(req, res, next) {
         obj.status = obj.application_status;
       }
 
+      if (resource === "contact-messages") {
+        obj.sender_name = obj.name;
+        obj.mobile = obj.phone;
+        obj.is_read = obj.is_read || false;
+      }
+
       if ((resource === "volunteer-applications" || resource === "sokkhom-applications") && !obj.application_code) {
         obj.application_code = `APP-${obj.id.slice(-6).toUpperCase()}`;
       }
@@ -88,6 +94,12 @@ async function getSubmissionById(req, res, next) {
 
     if (obj.application_status) {
       obj.status = obj.application_status;
+    }
+
+    if (resource === "contact-messages") {
+      obj.sender_name = obj.name;
+      obj.mobile = obj.phone;
+      obj.is_read = obj.is_read || false;
     }
 
     if ((resource === "volunteer-applications" || resource === "sokkhom-applications") && !obj.application_code) {
@@ -174,7 +186,7 @@ async function updateSubmission(req, res, next) {
       body.application_status = body.status;
       if (body.status === "approved") {
         body.status = "published";
-      } else if (body.status === "pending") {
+      } else if (body.status === "pending" || body.status === "under_review") {
         body.status = "pending_review";
       }
       // "rejected" is valid in both Mongoose schema and application status

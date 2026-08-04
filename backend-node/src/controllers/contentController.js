@@ -13,14 +13,17 @@ function getContentModel(resource) {
     case "campaigns":
       return Campaign;
     case "news":
+    case "news_posts":
       return News;
     case "reports":
       return Report;
     case "achievements":
       return Achievement;
     case "galleries":
+    case "gallery_items":
       return Gallery;
     case "committee-members":
+    case "committee_members":
       return CommitteeMember;
     case "committee-panels":
       return CommitteePanel;
@@ -254,9 +257,20 @@ async function createContent(req, res, next) {
     }
 
     // Keep names in sync for CommitteeMember
-    if (resource === "committee-members") {
+    if (resource === "committee-members" || resource === "committee_members") {
       if (body.full_name && !body.name) body.name = body.full_name;
       if (body.name && !body.full_name) body.full_name = body.name;
+    }
+
+    // Auto slugify campaigns and news if missing
+    if (resource === "campaigns" || resource === "news" || resource === "news_posts") {
+      if (!body.slug && body.title) {
+        body.slug = body.title
+          .toLowerCase()
+          .replace(/[^\w\s-]/g, "")
+          .trim()
+          .replace(/[-\s]+/g, "-");
+      }
     }
 
     const doc = new Model(body);
@@ -285,9 +299,20 @@ async function updateContent(req, res, next) {
     }
 
     // Keep names in sync for CommitteeMember
-    if (resource === "committee-members") {
+    if (resource === "committee-members" || resource === "committee_members") {
       if (body.full_name) body.name = body.full_name;
       if (body.name) body.full_name = body.name;
+    }
+
+    // Auto slugify campaigns and news if missing
+    if (resource === "campaigns" || resource === "news" || resource === "news_posts") {
+      if (!body.slug && body.title) {
+        body.slug = body.title
+          .toLowerCase()
+          .replace(/[^\w\s-]/g, "")
+          .trim()
+          .replace(/[-\s]+/g, "-");
+      }
     }
 
     const doc = await Model.findByIdAndUpdate(id, body, { new: true });

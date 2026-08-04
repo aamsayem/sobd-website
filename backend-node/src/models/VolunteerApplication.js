@@ -39,6 +39,75 @@ const volunteerApplicationSchema = new mongoose.Schema(
       default: null,
       trim: true,
     },
+    nid: {
+      type: String,
+      default: null,
+      trim: true,
+    },
+    phone: {
+      type: String,
+      required: true,
+      trim: true,
+      index: true,
+    },
+    email: {
+      type: String,
+      trim: true,
+      lowercase: true,
+      default: null,
+    },
+    father_name: {
+      type: String,
+      default: null,
+    },
+    mother_name: {
+      type: String,
+      default: null,
+    },
+    dob: {
+      type: String,
+      default: null,
+    },
+    gender: {
+      type: String,
+      default: null,
+    },
+    whatsapp: {
+      type: String,
+      default: null,
+    },
+    facebook: {
+      type: String,
+      default: null,
+    },
+    district: {
+      type: String,
+      default: null,
+    },
+    upazilla: {
+      type: String,
+      default: null,
+    },
+    institution: {
+      type: String,
+      default: null,
+    },
+    availability: {
+      type: String,
+      default: null,
+    },
+    interest_areas: {
+      type: [String],
+      default: [],
+    },
+    motivation: {
+      type: String,
+      default: null,
+    },
+    reference: {
+      type: String,
+      default: null,
+    },
     emergency_contact_name: {
       type: String,
       required: true,
