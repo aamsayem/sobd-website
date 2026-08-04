@@ -12,9 +12,8 @@ Production web application for Selfless Organization BD, built as a React + Type
 
 ## Repository Layout
 
-- `src/` - frontend application source
+- `frontend/` - React + TypeScript frontend application
 - `backend/` - Django project, apps, and API implementation
-- `public/` - static frontend assets
 - `docs/` - project and database documentation
 
 ## Local Development
@@ -22,9 +21,12 @@ Production web application for Selfless Organization BD, built as a React + Type
 Frontend:
 
 ```bash
+cd frontend
 npm install
 npm run dev
 ```
+
+Frontend production builds expect `VITE_DJANGO_API_URL` to point at the Django backend, for example `http://127.0.0.1:8000` locally or your deployed API host in production.
 
 Backend:
 
