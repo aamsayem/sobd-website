@@ -19,6 +19,9 @@ backend/.env
 backend/.env.*
 !backend/.env.example
 
+# Backend media uploads (local disk only - not for git)
+backend-node/media/
+
 __pycache__/
 *.pyc
 .pytest_cache/
