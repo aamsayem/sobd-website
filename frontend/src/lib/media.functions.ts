@@ -175,28 +175,41 @@ export async function deleteMedia(data: unknown) {
   const parsed = z.object({ path: z.string().min(3).max(400) }).parse(actualData);
   await assertAdmin();
 
-  let page = 1;
-  const pageSize = 200;
+  // Query the file directly by path suffix using the backend's new path filter
+  const res = await apiFetchRaw(`media/files/?path=${encodeURIComponent(parsed.path)}`);
+  if (!res.ok) throw new Error("Failed to find media file");
+  const json = await res.json();
+  const items = Array.isArray(json) ? json : (json.results ?? []);
+  
   let foundId: string | null = null;
-  while (true) {
-    const res = await apiFetchRaw(`media/files/?page=${page}&page_size=${pageSize}`);
-    if (!res.ok) break;
-    const json = await res.json();
-    const items = Array.isArray(json) ? json : (json.results ?? []);
-    for (const it of Array.isArray(items) ? items : []) {
-      const item = it as Record<string, unknown>;
-      if (
-        item.file_path === parsed.path ||
-        (typeof item.url === "string" && item.url.endsWith(parsed.path))
-      ) {
-        foundId = item.id as string;
-        break;
+  for (const it of Array.isArray(items) ? items : []) {
+    const item = it as Record<string, unknown>;
+    if (
+      item.file_path === parsed.path ||
+      (typeof item.url === "string" && item.url.endsWith(parsed.path))
+    ) {
+      foundId = item.id as string;
+      break;
+    }
+  }
+
+  // Fallback: If not found by query filter, search first 1000 items
+  if (!foundId) {
+    const resFallback = await apiFetchRaw(`media/files/?page_size=1000`);
+    if (resFallback.ok) {
+      const jsonFallback = await resFallback.json();
+      const itemsFallback = Array.isArray(jsonFallback) ? jsonFallback : (jsonFallback.results ?? []);
+      for (const it of Array.isArray(itemsFallback) ? itemsFallback : []) {
+        const item = it as Record<string, unknown>;
+        if (
+          item.file_path === parsed.path ||
+          (typeof item.url === "string" && item.url.endsWith(parsed.path))
+        ) {
+          foundId = item.id as string;
+          break;
+        }
       }
     }
-    if (foundId) break;
-    if (!Array.isArray(json) && json.next == null) break;
-    if (Array.isArray(items) && items.length < pageSize) break;
-    page++;
   }
 
   if (!foundId) throw new Error("Media file not found");

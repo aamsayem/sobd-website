@@ -57,7 +57,27 @@ async function uploadFile(req, res, next) {
 
 async function listFiles(req, res, next) {
   try {
-    const files = await MediaFile.find({ is_active: true }).exec();
+    const filter = { is_active: true };
+    if (req.query.path) {
+      filter.$or = [
+        { file_path: req.query.path },
+        { stored_file_name: req.query.path }
+      ];
+    }
+
+    const totalCount = await MediaFile.countDocuments(filter);
+
+    let query = MediaFile.find(filter);
+    if (req.query.page && req.query.page_size) {
+      const page = Math.max(1, parseInt(req.query.page) || 1);
+      const pageSize = Math.max(1, parseInt(req.query.page_size) || 10);
+      query = query.skip((page - 1) * pageSize).limit(pageSize);
+    } else if (req.query.page_size) {
+      const pageSize = Math.max(1, parseInt(req.query.page_size) || 10);
+      query = query.limit(pageSize);
+    }
+
+    const files = await query.exec();
     const formatted = files.map(file => {
       const obj = file.toObject();
       obj.id = obj._id.toString();
@@ -67,7 +87,7 @@ async function listFiles(req, res, next) {
 
     if (req.query.page_size || req.query.page) {
       return res.json({
-        count: formatted.length,
+        count: totalCount,
         results: formatted,
       });
     }

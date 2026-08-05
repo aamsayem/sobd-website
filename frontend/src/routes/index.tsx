@@ -227,14 +227,16 @@ function Home() {
           className="grid grid-cols-2 lg:grid-cols-4 gap-4 glass-strong rounded-3xl p-6 lg:p-8 shadow-elevated"
         >
           {stats.map((s, i) => (
-            <div key={i} className="text-center px-4 py-3">
-              <div className="inline-flex h-12 w-12 rounded-2xl bg-emerald-gradient text-primary-foreground items-center justify-center mb-3 shadow-glow">
+            <div key={i} className="flex flex-col items-center justify-center text-center p-2 h-full">
+              <div className="inline-flex h-12 w-12 rounded-2xl bg-emerald-gradient text-primary-foreground items-center justify-center mb-3 shadow-glow shrink-0">
                 <s.icon className="h-5 w-5" />
               </div>
-              <div className="text-3xl lg:text-4xl font-display font-bold text-gradient">
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-display font-bold text-gradient leading-none">
                 <AnimatedCounter value={s.value} suffix={s.suffix} />
               </div>
-              <div className="mt-1 text-sm font-semibold text-foreground">{s.label}</div>
+              <div className="mt-2 text-xs sm:text-sm font-semibold text-foreground leading-snug max-w-[120px] sm:max-w-none">
+                {s.label}
+              </div>
             </div>
           ))}
         </motion.div>
@@ -342,7 +344,7 @@ function Home() {
       <section className="container mx-auto px-4 mt-32">
         <motion.div {...fade} className="relative overflow-hidden rounded-[2rem] shadow-elevated">
           <div className="grid lg:grid-cols-2">
-            <div className="relative aspect-4/3 lg:aspect-auto min-h-90">
+            <div className="relative aspect-4/3 lg:aspect-auto min-h-[360px]">
               <img
                 src={sokkhomImage}
                 alt="Shokkhom Foundation"
@@ -356,19 +358,19 @@ function Home() {
                 <Sprout className="h-3.5 w-3.5" /> FEATURED PROJECT
               </div>
             </div>
-            <div className="bg-card p-8 lg:p-12 flex flex-col justify-center">
-              <h2 className="font-display font-bold text-4xl lg:text-5xl leading-tight">
+            <div className="bg-card p-6 xs:p-8 lg:p-12 flex flex-col justify-center items-center text-center lg:items-start lg:text-left">
+              <h2 className="font-display font-bold text-3xl xs:text-4xl lg:text-5xl leading-tight">
                 SHOKKOM FOUNDATION
               </h2>
               <p className="text-sm font-semibold text-primary mt-2 tracking-wide">
                 A PATH TO SELF-RELIANCE
               </p>
-              <p className="text-muted-foreground mt-5 leading-relaxed">
+              <p className="text-muted-foreground mt-5 leading-relaxed text-sm xs:text-base max-w-prose">
                 A long-term initiative to make financially struggling people self-reliant with
                 one-time support — small businesses, rickshaws/vans, sewing machines, or grocery
                 shops that build a permanent livelihood.
               </p>
-              <div className="grid grid-cols-3 gap-3 mt-7">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-7 w-full max-w-md lg:max-w-none">
                 {[
                   { n: 42, l: "Families empowered" },
                   { n: 18, l: "Active beneficiaries" },
@@ -382,16 +384,16 @@ function Home() {
                   </div>
                 ))}
               </div>
-              <div className="mt-7 flex flex-wrap gap-3">
+              <div className="mt-7 flex flex-col xs:flex-row justify-center lg:justify-start gap-3 w-full max-w-md lg:max-w-none">
                 <Link
                   to="/sokkhom"
-                  className="inline-flex items-center gap-2 bg-emerald-gradient text-primary-foreground px-5 py-3 rounded-xl font-semibold shadow-glow hover:scale-[1.03] transition-transform"
+                  className="inline-flex items-center justify-center gap-2 bg-emerald-gradient text-primary-foreground px-5 py-3 rounded-xl font-semibold shadow-glow hover:scale-[1.03] transition-transform w-full xs:w-auto"
                 >
                   Learn more <ArrowRight className="h-4 w-4" />
                 </Link>
                 <Link
                   to="/sokkhom"
-                  className="inline-flex items-center gap-2 glass-strong px-5 py-3 rounded-xl font-semibold hover:bg-primary/5 transition-colors"
+                  className="inline-flex items-center justify-center gap-2 glass-strong px-5 py-3 rounded-xl font-semibold hover:bg-primary/5 transition-colors w-full xs:w-auto"
                 >
                   Apply for Support
                 </Link>
@@ -403,7 +405,7 @@ function Home() {
 
       {/* ABOUT / MISSION */}
       <section className="container mx-auto px-4 mt-32">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="max-w-3xl mx-auto">
           <motion.div {...fade}>
             <div className="inline-flex items-center gap-2 text-xs font-semibold text-primary bg-primary/10 px-3 py-1.5 rounded-full mb-4">
               <Sparkles className="h-3.5 w-3.5" /> ABOUT US
@@ -452,47 +454,6 @@ function Home() {
                   </div>
                 </div>
               ))}
-            </div>
-          </motion.div>
-
-          <motion.div
-            {...fade}
-            transition={{ ...fade.transition, delay: 0.15 }}
-            className="relative"
-          >
-            <div className="grid grid-cols-2 gap-4">
-              <img
-                src={foodImage}
-                alt="Food support activity"
-                loading="lazy"
-                width={1024}
-                height={768}
-                className="rounded-3xl object-cover aspect-[3/4] shadow-soft"
-              />
-              <div className="space-y-4 pt-10">
-                <img
-                  src={educationImage}
-                  alt="Education support activity"
-                  loading="lazy"
-                  width={1024}
-                  height={768}
-                  className="rounded-3xl object-cover aspect-square shadow-soft"
-                />
-                <img
-                  src={medicalImage}
-                  alt="Medical support activity"
-                  loading="lazy"
-                  width={1024}
-                  height={768}
-                  className="rounded-3xl object-cover aspect-[4/3] shadow-soft"
-                />
-              </div>
-            </div>
-            <div className="absolute -bottom-6 -left-6 glass-strong rounded-2xl p-5 max-w-55 shadow-elevated">
-              <div className="text-3xl font-bold text-gradient">Since 2020</div>
-              <div className="text-xs text-muted-foreground mt-1">
-                years of unbroken service to communities
-              </div>
             </div>
           </motion.div>
         </div>

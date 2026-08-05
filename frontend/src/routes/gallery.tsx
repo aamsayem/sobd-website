@@ -53,7 +53,7 @@ function Gallery() {
             <Loader2 className="h-8 w-8 animate-spin text-emerald-700" />
           </div>
         ) : (
-          <div className="columns-2 md:columns-3 gap-4 space-y-4">
+          <div className="columns-1 sm:columns-2 md:columns-3 gap-4 space-y-4">
             {items.map((it) => (
               <figure key={it.id} className="break-inside-avoid">
                 <img

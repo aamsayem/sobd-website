@@ -172,7 +172,7 @@ function Sokkhom() {
       <section className="container mx-auto px-4 -mt-12 relative z-10">
         <motion.div
           {...fade}
-          className="grid grid-cols-2 lg:grid-cols-4 gap-4 glass-strong rounded-3xl p-6 lg:p-8 shadow-elevated"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 glass-strong rounded-3xl p-6 lg:p-8 shadow-elevated"
         >
           {[
             { i: Users, n: 42, s: "+", l: "Families empowered" },
@@ -552,15 +552,5 @@ function Field({
         className="mt-1.5 w-full glass rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/30"
       />
     </div>
-  );
-}
-
-function UploadField({ label }: { label: string }) {
-  return (
-    <label className="cursor-pointer flex items-center gap-3 glass rounded-xl px-4 py-3 hover:bg-primary/5 transition-colors">
-      <Upload className="h-4 w-4 text-primary" />
-      <span className="text-sm font-medium">{label}</span>
-      <input type="file" className="hidden" accept="image/*" />
-    </label>
   );
 }

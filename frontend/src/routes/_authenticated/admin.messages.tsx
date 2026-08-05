@@ -144,11 +144,11 @@ function MessagesPage() {
                       </span>
                     )}
                   </div>
-                  <div className="text-xs text-emerald-700 mt-1">
-                    {m.email && <span>{m.email}</span>}
+                  <div className="text-xs text-emerald-700 mt-1 break-words">
+                    {m.email && <span className="break-all">{m.email}</span>}
                     {m.email && m.mobile && " · "}
-                    {m.mobile && <span>{m.mobile}</span>}
-                    <span className="ml-2">· {new Date(m.created_at).toLocaleString()}</span>
+                    {m.mobile && <span className="break-all">{m.mobile}</span>}
+                    <span className="inline-block mt-1 sm:mt-0 sm:ml-2">· {new Date(m.created_at).toLocaleString()}</span>
                   </div>
                   {m.subject && (
                     <div className="mt-2 font-semibold text-emerald-900 text-sm">{m.subject}</div>

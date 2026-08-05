@@ -241,10 +241,10 @@ function DonationsPage() {
               ].map(([k, v]) => (
                 <div
                   key={k as string}
-                  className="grid grid-cols-3 gap-3 border-b border-emerald-50 pb-2"
+                  className="grid grid-cols-1 sm:grid-cols-3 gap-1 sm:gap-3 border-b border-emerald-50 pb-2"
                 >
                   <div className="text-emerald-700 font-medium">{k}</div>
-                  <div className="col-span-2 text-emerald-950 wrap-break-word">{v || "—"}</div>
+                  <div className="sm:col-span-2 text-emerald-950 break-words">{v || "—"}</div>
                 </div>
               ))}
               {view.proof_screenshot ? <ScreenshotPreview proof={view.proof_screenshot} /> : null}

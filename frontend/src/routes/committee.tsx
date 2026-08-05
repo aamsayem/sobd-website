@@ -114,10 +114,12 @@ function Committee() {
       <section className="container mx-auto px-4 -mt-10 relative z-10">
         <motion.div
           {...fade}
-          className="glass-strong rounded-3xl p-6 lg:p-8 shadow-elevated grid sm:grid-cols-3 gap-6"
+          className="glass-strong rounded-3xl p-6 lg:p-8 shadow-elevated grid grid-cols-2 sm:grid-cols-3 gap-6"
         >
           <Stat icon={Users} value={totalMembers} label="Total members" />
-          <Stat icon={Users} value={panelsCount} label="Panels" />
+          <div className="hidden sm:block">
+            <Stat icon={Users} value={panelsCount} label="Panels" />
+          </div>
           <Stat icon={Users} value={6} suffix="+" label="Years of leadership" />
         </motion.div>
       </section>
@@ -166,7 +168,7 @@ function Committee() {
             <motion.div {...fade} className="mb-8">
               <h2 className="text-3xl lg:text-4xl font-bold">{c.name}</h2>
             </motion.div>
-            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
               {c.members.map((m, i) => (
                 <motion.a
                   key={m.id}

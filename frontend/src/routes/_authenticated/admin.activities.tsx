@@ -93,7 +93,7 @@ function ActivitiesAdmin() {
 
   return (
     <div className="p-6 lg:p-10 max-w-6xl">
-      <header className="flex justify-between items-center mb-6">
+      <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-3xl font-bold text-emerald-950">Activities & Projects</h1>
           <p className="text-sm text-emerald-700 mt-1">

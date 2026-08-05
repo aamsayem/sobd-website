@@ -174,7 +174,7 @@ function DonationForm() {
 
     setSubmitting(true);
     try {
-      let proofScreenshotId: number | null = null;
+      let proofScreenshotId: string | null = null;
       if (file && file.size > 0) {
         try {
           const fileReader = new FileReader();
@@ -192,7 +192,7 @@ function DonationForm() {
               base64,
             },
           });
-          proofScreenshotId = Number(res.id);
+          proofScreenshotId = res.id;
         } catch (uploadError: unknown) {
           console.error("Screenshot upload failed:", uploadError);
           toast.error(
@@ -525,7 +525,7 @@ function DonatePage() {
                     {b.label}
                   </p>
                   <p
-                    className={`mt-0.5 font-semibold wrap-break-word ${b.highlight ? "text-primary text-lg tracking-wide" : "text-foreground"}`}
+                    className={`mt-0.5 font-semibold break-words ${b.highlight ? "text-primary text-lg tracking-wide" : "text-foreground"}`}
                   >
                     {b.value}
                   </p>
@@ -563,7 +563,7 @@ function DonatePage() {
               Your trust, accounted for.
             </h2>
           </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 glass-strong rounded-3xl p-6 lg:p-8 shadow-elevated">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 glass-strong rounded-3xl p-6 lg:p-8 shadow-elevated">
             {transparencyStats.map((s, i) => (
               <div key={i} className="text-center px-4 py-3">
                 <div className="inline-flex h-12 w-12 rounded-2xl bg-emerald-gradient text-primary-foreground items-center justify-center mb-3 shadow-glow">

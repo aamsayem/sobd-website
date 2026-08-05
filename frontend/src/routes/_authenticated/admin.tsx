@@ -140,7 +140,7 @@ function AdminLayout() {
 
       {/* Sidebar */}
       <aside
-        className={`fixed lg:sticky top-0 left-0 lg:top-24 h-screen lg:h-[calc(100vh-6rem)] w-72 bg-white border-r border-emerald-100 z-40 transition-transform ${open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
+        className={`fixed lg:sticky top-0 left-0 lg:top-24 h-screen lg:h-[calc(100vh-6rem)] w-72 bg-white border-r border-emerald-100 z-50 transition-transform ${open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
       >
         <div className="p-5 border-b border-emerald-100 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5">
@@ -193,7 +193,7 @@ function AdminLayout() {
       </aside>
 
       {open && (
-        <div onClick={() => setOpen(false)} className="lg:hidden fixed inset-0 z-30 bg-black/40" />
+        <div onClick={() => setOpen(false)} className="lg:hidden fixed inset-0 z-40 bg-black/40" />
       )}
 
       <main className="flex-1 min-w-0 pt-12 lg:pt-0">
