@@ -8,6 +8,7 @@ const CommitteePanel = require("../models/CommitteePanel");
 const User = require("../models/User");
 const Activity = require("../models/Activity");
 const SiteSetting = require("../models/SiteSetting");
+const SokkhomStory = require("../models/SokkhomStory");
 const { resolveBodyUrls } = require("../utils/urlResolver");
 const bcrypt = require("bcryptjs");
 
@@ -34,6 +35,9 @@ function getContentModel(resource) {
       return Activity;
     case "site-settings":
       return SiteSetting;
+    case "stories":
+    case "sokkhom-stories":
+      return SokkhomStory;
     default:
       return null;
   }
@@ -307,6 +311,45 @@ async function seedDatabase() {
     });
     await member.save();
 
+    const storyCount = await SokkhomStory.countDocuments();
+    if (storyCount === 0) {
+      console.log("Seeding default Sokkhom success stories...");
+      const defaultStories = [
+        {
+          name: "Rahima Begum",
+          title: "Sewing machine support · Jessore",
+          before: "Single mother of three, no stable income, surviving on day labour.",
+          after: "Now runs a small tailoring service from home, earning ৳12,000+/month.",
+          description: "Tailoring service setup support.",
+          display_order: 1,
+          is_active: true,
+          status: "published"
+        },
+        {
+          name: "Md. Karim",
+          title: "Rickshaw support · Dhaka",
+          before: "Renting a rickshaw, half his earnings going to the owner every day.",
+          after: "Owns his rickshaw — full earnings, saving for his daughter's school.",
+          description: "Rickshaw ownership support.",
+          display_order: 2,
+          is_active: true,
+          status: "published"
+        },
+        {
+          name: "Salma Akter",
+          title: "Grocery shop · Mymensingh",
+          before: "Husband ill, no income, two children out of school.",
+          after: "Runs a neighbourhood grocery shop; both children back in school.",
+          description: "Grocery store supplies setup support.",
+          display_order: 3,
+          is_active: true,
+          status: "published"
+        }
+      ];
+      await SokkhomStory.insertMany(defaultStories);
+      console.log("Default success stories seeded successfully!");
+    }
+
     console.log("Initial content seeding completed successfully!");
   } catch (error) {
     console.error("Error seeding database:", error);
@@ -321,7 +364,7 @@ async function listContent(req, res, next) {
       return res.status(404).json({ success: false, message: `Resource ${resource} not found` });
     }
 
-    const docs = await Model.find({ is_active: true }).populate("created_by").populate("updated_by").exec();
+    const docs = await Model.find({ is_active: true }).populate("created_by").populate("updated_by").populate("image");
     const formatted = docs.map(doc => {
       const obj = doc.toObject();
       obj.id = obj._id.toString();
@@ -342,7 +385,7 @@ async function getContentById(req, res, next) {
       return res.status(404).json({ success: false, message: `Resource ${resource} not found` });
     }
 
-    const doc = await Model.findById(id).populate("created_by").populate("updated_by").exec();
+    const doc = await Model.findById(id).populate("created_by").populate("updated_by").populate("image");
     if (!doc) {
       return res.status(404).json({ success: false, message: "Content not found" });
     }

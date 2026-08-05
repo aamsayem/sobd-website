@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
+import { ResponsiveHeroImage } from "@/components/ResponsiveHeroImage";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
@@ -158,21 +159,19 @@ function Home() {
 
   const displayHeroText = settingsMap.home_hero_text || "A youth-led, humanitarian organization, making compassion a reality in Bangladesh through free education, livelihoods, healthcare, sustainable employment, and emergency relief work.";
   const displayHeroImage = settingsMap.home_hero_image || heroImage;
+  const displayHeroImageMobile = settingsMap.home_hero_image_mobile || displayHeroImage;
 
   return (
     <>
       {/* HERO */}
       <section className="relative flex min-h-[88vh] items-center overflow-hidden pt-24 -mt-24">
-        <div className="absolute inset-0 -z-10">
-          <img
-            src={displayHeroImage}
-            alt="SELFLESS ORGANIZATION BD volunteers serving people in the community"
-            className="h-full w-full object-cover object-[65%_center] sm:object-center"
-            width={1920}
-            height={1080}
-          />
-          <div className="absolute inset-0 bg-linear-to-r from-emerald-950/45 via-emerald-900/20 to-transparent" />
-        </div>
+        <ResponsiveHeroImage
+          desktopSrc={displayHeroImage}
+          mobileSrc={displayHeroImageMobile}
+          alt="SELFLESS ORGANIZATION BD volunteers serving people in the community"
+          className="h-full w-full object-cover object-[65%_center] sm:object-center"
+        />
+        <div className="absolute inset-0 -z-10 bg-linear-to-r from-emerald-950/45 via-emerald-900/20 to-transparent" />
 
         <div className="container relative mx-auto px-4 py-20">
           <motion.div
@@ -341,59 +340,58 @@ function Home() {
       </section>
 
       {/* SHOKKOM FOUNDATION FEATURED */}
-      <section className="container mx-auto px-4 mt-32">
-        <motion.div {...fade} className="relative overflow-hidden rounded-[2rem] shadow-elevated">
-          <div className="grid lg:grid-cols-2">
-            <div className="relative aspect-4/3 lg:aspect-auto min-h-[360px]">
-              <img
-                src={sokkhomImage}
+      <section className="w-full max-w-full mt-32 px-4 sm:px-6 lg:px-8 overflow-hidden">
+        <motion.div {...fade} className="relative overflow-hidden rounded-2xl sm:rounded-[2rem] shadow-elevated w-full max-w-5xl mx-auto bg-card border border-emerald-100/10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 w-full">
+            <div className="relative w-full aspect-video lg:aspect-auto lg:min-h-[480px] overflow-hidden">
+              <ResponsiveHeroImage
+                desktopSrc={settingsMap.home_sokkhom_featured_image || sokkhomImage}
+                mobileSrc={settingsMap.home_sokkhom_featured_image_mobile || settingsMap.home_sokkhom_featured_image || sokkhomImage}
                 alt="Shokkhom Foundation"
-                loading="lazy"
-                width={1600}
-                height={1000}
-                className="absolute inset-0 h-full w-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-tr from-black/40 to-transparent" />
               <div className="absolute top-5 left-5 inline-flex items-center gap-2 glass-strong text-white px-3 py-1.5 rounded-full text-xs font-semibold">
                 <Sprout className="h-3.5 w-3.5" /> FEATURED PROJECT
               </div>
             </div>
-            <div className="bg-card p-6 xs:p-8 lg:p-12 flex flex-col justify-center items-center text-center lg:items-start lg:text-left">
-              <h2 className="font-display font-bold text-3xl xs:text-4xl lg:text-5xl leading-tight">
+            <div className="bg-card p-6 sm:p-10 lg:p-12 flex flex-col justify-center items-center text-center lg:items-start lg:text-left w-full overflow-hidden box-border">
+              <h2 className="font-display font-bold text-2xl xs:text-3xl sm:text-4xl lg:text-5xl leading-tight w-full break-words">
                 SHOKKOM FOUNDATION
               </h2>
-              <p className="text-sm font-semibold text-primary mt-2 tracking-wide">
+              <p className="text-xs sm:text-sm font-semibold text-primary mt-2 tracking-wide w-full break-words">
                 A PATH TO SELF-RELIANCE
               </p>
-              <p className="text-muted-foreground mt-5 leading-relaxed text-sm xs:text-base max-w-prose">
+              <p className="text-muted-foreground mt-5 leading-relaxed text-xs xs:text-sm sm:text-base max-w-prose w-full break-words">
                 A long-term initiative to make financially struggling people self-reliant with
                 one-time support — small businesses, rickshaws/vans, sewing machines, or grocery
                 shops that build a permanent livelihood.
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-7 w-full max-w-md lg:max-w-none">
+              <div className="flex flex-col sm:grid sm:grid-cols-3 gap-3 mt-7 w-full max-w-md lg:max-w-none">
                 {[
                   { n: 42, l: "Families empowered" },
                   { n: 18, l: "Active beneficiaries" },
                   { n: 96, suffix: "%", l: "Still self-reliant" },
                 ].map((s, i) => (
-                  <div key={i} className="glass rounded-xl p-3 text-center">
-                    <div className="text-2xl font-bold text-gradient">
+                  <div key={i} className="glass rounded-xl p-3 text-left sm:text-center w-full flex sm:flex-col items-center sm:items-center justify-start sm:justify-center gap-3 sm:gap-1 min-h-[56px] sm:min-h-[80px]">
+                    <div className="text-lg sm:text-2xl font-bold text-gradient leading-none shrink-0">
                       <AnimatedCounter value={s.n} suffix={s.suffix ?? "+"} />
                     </div>
-                    <div className="text-[11px] text-muted-foreground mt-0.5">{s.l}</div>
+                    <div className="text-[10px] sm:text-[11px] text-muted-foreground leading-tight break-words">
+                      {s.l}
+                    </div>
                   </div>
                 ))}
               </div>
-              <div className="mt-7 flex flex-col xs:flex-row justify-center lg:justify-start gap-3 w-full max-w-md lg:max-w-none">
+              <div className="mt-7 flex flex-col sm:flex-row justify-center lg:justify-start gap-3 w-full max-w-md lg:max-w-none">
                 <Link
                   to="/sokkhom"
-                  className="inline-flex items-center justify-center gap-2 bg-emerald-gradient text-primary-foreground px-5 py-3 rounded-xl font-semibold shadow-glow hover:scale-[1.03] transition-transform w-full xs:w-auto"
+                  className="inline-flex items-center justify-center gap-2 bg-emerald-gradient text-primary-foreground px-5 py-3.5 rounded-xl font-semibold shadow-glow hover:scale-[1.01] transition-transform w-full sm:w-auto text-sm"
                 >
                   Learn more <ArrowRight className="h-4 w-4" />
                 </Link>
                 <Link
                   to="/sokkhom"
-                  className="inline-flex items-center justify-center gap-2 glass-strong px-5 py-3 rounded-xl font-semibold hover:bg-primary/5 transition-colors w-full xs:w-auto"
+                  className="inline-flex items-center justify-center gap-2 glass-strong px-5 py-3.5 rounded-xl font-semibold hover:bg-primary/5 transition-colors w-full sm:w-auto text-sm"
                 >
                   Apply for Support
                 </Link>

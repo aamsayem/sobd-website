@@ -77,7 +77,7 @@ async function listFiles(req, res, next) {
       query = query.limit(pageSize);
     }
 
-    const files = await query.exec();
+    const files = await query;
     const formatted = files.map(file => {
       const obj = file.toObject();
       obj.id = obj._id.toString();

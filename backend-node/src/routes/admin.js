@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get("/user-roles", authenticate, requireAdmin, async (req, res, next) => {
   try {
-    const users = await User.find({}).exec();
+    const users = await User.find({});
     const formatted = users.map(u => {
       const obj = u.toObject();
       obj.id = obj._id.toString();

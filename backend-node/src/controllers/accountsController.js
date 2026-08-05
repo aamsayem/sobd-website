@@ -36,7 +36,7 @@ async function signup(req, res, next) {
       const emailPrefix = email.split("@")[0].replace(/[^a-zA-Z0-9]/g, "");
       username = emailPrefix;
       const prefixRegex = new RegExp(`^${emailPrefix}\\d*$`, "i");
-      const users = await User.find({ username: prefixRegex }, "username").exec();
+      const users = await User.find({ username: prefixRegex }, "username");
       const existingUsernames = new Set(users.map(u => u.username.toLowerCase()));
 
       let counter = 1;

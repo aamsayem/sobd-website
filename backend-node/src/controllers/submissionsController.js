@@ -38,7 +38,7 @@ async function getSubmissions(req, res, next) {
       query = query.populate("campaign").populate("proof_screenshot").populate("verified_by");
     }
 
-    const docs = await query.exec();
+    const docs = await query;
     const formatted = docs.map(doc => {
       const obj = doc.toObject();
       obj.id = obj._id.toString();
@@ -85,7 +85,7 @@ async function getSubmissionById(req, res, next) {
       query = query.populate("campaign").populate("proof_screenshot").populate("verified_by");
     }
 
-    const doc = await query.exec();
+    const doc = await query;
     if (!doc) {
       return res.status(404).json({ success: false, message: "Submission not found" });
     }

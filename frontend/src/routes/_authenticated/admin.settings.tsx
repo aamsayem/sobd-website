@@ -23,7 +23,11 @@ function SettingsAdmin() {
   const [formData, setFormData] = useState<Record<string, string>>({
     home_hero_text: "",
     home_hero_image: "",
+    home_hero_image_mobile: "",
+    home_sokkhom_featured_image: "",
+    home_sokkhom_featured_image_mobile: "",
     sokkhom_hero_image: "",
+    sokkhom_hero_image_mobile: "",
     sokkhom_bottom_img_1: "",
     sokkhom_bottom_img_2: "",
     sokkhom_bottom_img_3: "",
@@ -105,15 +109,53 @@ function SettingsAdmin() {
               />
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-emerald-700 uppercase tracking-wider mb-1">
-                Hero Background Picture
-              </label>
-              <ImageUploader
-                value={formData.home_hero_image}
-                onChange={(url) => setFormData({ ...formData, home_hero_image: url })}
-                folder="settings"
-              />
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-semibold text-emerald-700 uppercase tracking-wider mb-1">
+                  Hero Background Picture (Desktop)
+                </label>
+                <ImageUploader
+                  value={formData.home_hero_image}
+                  onChange={(url) => setFormData({ ...formData, home_hero_image: url })}
+                  folder="settings"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-emerald-700 uppercase tracking-wider mb-1">
+                  Hero Background Picture (Mobile)
+                </label>
+                <ImageUploader
+                  value={formData.home_hero_image_mobile}
+                  onChange={(url) => setFormData({ ...formData, home_hero_image_mobile: url })}
+                  folder="settings"
+                />
+              </div>
+            </div>
+
+            <div className="border-t border-emerald-50 pt-4">
+              <h3 className="text-sm font-bold text-emerald-800 mb-2">Home Page Shokkhom Section Image</h3>
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-emerald-700 uppercase tracking-wider mb-1">
+                    Featured Image (Desktop)
+                  </label>
+                  <ImageUploader
+                    value={formData.home_sokkhom_featured_image}
+                    onChange={(url) => setFormData({ ...formData, home_sokkhom_featured_image: url })}
+                    folder="settings"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-emerald-700 uppercase tracking-wider mb-1">
+                    Featured Image (Mobile)
+                  </label>
+                  <ImageUploader
+                    value={formData.home_sokkhom_featured_image_mobile}
+                    onChange={(url) => setFormData({ ...formData, home_sokkhom_featured_image_mobile: url })}
+                    folder="settings"
+                  />
+                </div>
+              </div>
             </div>
           </div>
 
@@ -122,15 +164,27 @@ function SettingsAdmin() {
               Shokkhom Foundation Page
             </h2>
 
-            <div>
-              <label className="block text-xs font-semibold text-emerald-700 uppercase tracking-wider mb-1">
-                Shokkhom Hero Picture
-              </label>
-              <ImageUploader
-                value={formData.sokkhom_hero_image}
-                onChange={(url) => setFormData({ ...formData, sokkhom_hero_image: url })}
-                folder="settings"
-              />
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-semibold text-emerald-700 uppercase tracking-wider mb-1">
+                  Shokkhom Hero Picture (Desktop)
+                </label>
+                <ImageUploader
+                  value={formData.sokkhom_hero_image}
+                  onChange={(url) => setFormData({ ...formData, sokkhom_hero_image: url })}
+                  folder="settings"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-emerald-700 uppercase tracking-wider mb-1">
+                  Shokkhom Hero Picture (Mobile)
+                </label>
+                <ImageUploader
+                  value={formData.sokkhom_hero_image_mobile}
+                  onChange={(url) => setFormData({ ...formData, sokkhom_hero_image_mobile: url })}
+                  folder="settings"
+                />
+              </div>
             </div>
 
             <div>

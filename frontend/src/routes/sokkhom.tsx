@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { ResponsiveHeroImage } from "@/components/ResponsiveHeroImage";
 import { motion } from "framer-motion";
 import { useState, useMemo } from "react";
 import {
@@ -97,6 +98,23 @@ function Sokkhom() {
     queryFn: () => getPublicSettings(),
   });
 
+  const { data: dbStories } = useQuery({
+    queryKey: ["public-stories"],
+    queryFn: async () => {
+      const res = await api.get<any>("content/stories/?page_size=1000");
+      return Array.isArray(res) ? res : (res.results ?? []);
+    },
+  });
+
+  const activeStories = useMemo(() => {
+    if (dbStories && dbStories.length > 0) {
+      return dbStories
+        .filter((s: any) => s.is_active !== false)
+        .sort((a: any, b: any) => (a.display_order ?? 0) - (b.display_order ?? 0));
+    }
+    return stories;
+  }, [dbStories]);
+
   const settingsMap = useMemo(() => {
     const map: Record<string, string> = {};
     if (Array.isArray(dbSettings)) {
@@ -108,6 +126,7 @@ function Sokkhom() {
   }, [dbSettings]);
 
   const displayHeroImage = settingsMap.sokkhom_hero_image || sokkhomImage;
+  const displayHeroImageMobile = settingsMap.sokkhom_hero_image_mobile || displayHeroImage;
   const bottomImages = [
     settingsMap.sokkhom_bottom_img_1 || sokkhomImage,
     settingsMap.sokkhom_bottom_img_2 || foodImage,
@@ -119,16 +138,12 @@ function Sokkhom() {
     <>
       {/* HERO */}
       <section className="relative -mt-24 pt-32 pb-20 overflow-hidden">
-        <div className="absolute inset-0 -z-10">
-          <img
-            src={displayHeroImage}
-            alt="Shokkhom Foundation"
-            className="h-full w-full object-cover"
-            width={1600}
-            height={1000}
-          />
-          <div className="absolute inset-0 bg-gradient-to-br from-black/30 via-transparent to-emerald-900/40" />
-        </div>
+        <ResponsiveHeroImage
+          desktopSrc={displayHeroImage}
+          mobileSrc={displayHeroImageMobile}
+          alt="Shokkhom Foundation"
+        />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-black/30 via-transparent to-emerald-900/40" />
         <div className="container mx-auto px-4 relative">
           <Link to="/" className="text-white/80 hover:text-white text-sm">
             ← Back to home
@@ -335,39 +350,72 @@ function Sokkhom() {
           <p className="font-bn text-muted-foreground mt-2">যাদের জীবন বদলেছে</p>
         </motion.div>
         <div className="grid md:grid-cols-3 gap-6">
-          {stories.map((s, i) => (
-            <motion.article
-              key={i}
-              {...fade}
-              transition={{ ...fade.transition, delay: i * 0.1 }}
-              className="glass-strong rounded-3xl p-7 relative"
-            >
-              <Quote className="h-7 w-7 text-primary/30 absolute top-5 right-5" />
-              <div className="flex items-center gap-3 mb-4">
-                <div className="h-12 w-12 rounded-full bg-emerald-gradient text-primary-foreground flex items-center justify-center font-bold">
-                  {s.name.charAt(0)}
-                </div>
-                <div>
-                  <div className="font-semibold text-sm">{s.name}</div>
-                  <div className="text-xs text-muted-foreground">{s.role}</div>
-                </div>
-              </div>
-              <div className="space-y-3 text-sm">
-                <div>
-                  <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">
-                    Before
+          {activeStories.map((s: any, i: number) => {
+            const hasImage = s.image_url || (s.image?.file_path || s.image?.url);
+            const imagePath = s.image_url || (s.image?.file_path || s.image?.url);
+            return (
+              <motion.article
+                key={s.id || i}
+                {...fade}
+                transition={{ ...fade.transition, delay: i * 0.1 }}
+                className="glass-strong rounded-3xl overflow-hidden relative group hover:shadow-elevated hover:scale-[1.02] transition-all duration-300 flex flex-col h-full"
+              >
+                {hasImage && (
+                  <div className="relative aspect-video w-full overflow-hidden bg-emerald-950/5">
+                    <img
+                      src={imagePath}
+                      alt={s.name}
+                      loading="lazy"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
                   </div>
-                  <p className="text-foreground/80 mt-1">{s.before}</p>
-                </div>
-                <div className="pt-3 border-t border-border/60">
-                  <div className="text-[11px] uppercase tracking-wider text-primary font-semibold">
-                    After
+                )}
+                <div className="p-7 relative flex-1 flex flex-col justify-between">
+                  <Quote className="h-7 w-7 text-primary/30 absolute top-5 right-5" />
+                  <div>
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="h-12 w-12 shrink-0 rounded-full bg-emerald-gradient text-primary-foreground flex items-center justify-center font-bold overflow-hidden">
+                        {hasImage ? (
+                          <img
+                            src={imagePath}
+                            alt={s.name}
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          s.name.charAt(0)
+                        )}
+                      </div>
+                      <div>
+                        <div className="font-semibold text-sm">{s.name}</div>
+                        <div className="text-xs text-muted-foreground">{s.role || s.title}</div>
+                      </div>
+                    </div>
+                    <div className="space-y-3 text-sm">
+                      {s.before && (
+                        <div>
+                          <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">
+                            Before
+                          </div>
+                          <p className="text-foreground/80 mt-1">{s.before}</p>
+                        </div>
+                      )}
+                      {s.after && (
+                        <div className="pt-3 border-t border-border/60">
+                          <div className="text-[11px] uppercase tracking-wider text-primary font-semibold">
+                            After
+                          </div>
+                          <p className="text-foreground/95 mt-1 font-medium">{s.after}</p>
+                        </div>
+                      )}
+                      {s.description && !s.before && !s.after && (
+                        <p className="text-foreground/80 leading-relaxed mt-2">{s.description}</p>
+                      )}
+                    </div>
                   </div>
-                  <p className="text-foreground/90 mt-1">{s.after}</p>
                 </div>
-              </div>
-            </motion.article>
-          ))}
+              </motion.article>
+            );
+          })}
         </div>
       </section>
 
