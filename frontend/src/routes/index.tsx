@@ -22,7 +22,12 @@ import {
   Sprout,
 } from "lucide-react";
 import { AnimatedCounter } from "@/components/animated-counter";
-import { getPublicCampaigns, getPublicSettings } from "@/lib/public-content.functions";
+import {
+  getPublicCampaigns,
+  getPublicSettings,
+  getPublicActivities,
+} from "@/lib/public-content.functions";
+import * as LucideIcons from "lucide-react";
 import heroImage from "@/assets/Hero.png";
 import reliefImage from "@/assets/Activities — Relief.png";
 import educationImage from "@/assets/Activities — Education.png";
@@ -55,44 +60,22 @@ const stats = [
   { icon: MapPin, value: 38, suffix: "", label: "Upazilla Covered" },
 ];
 
-const activities = [
-  {
-    img: reliefImage,
-    icon: ShieldCheck,
-    title: "Relief Campaign",
-    desc: "Rapid response during floods, cyclones and humanitarian crises.",
-  },
-  {
-    img: educationImage,
-    icon: GraduationCap,
-    title: "Education Support",
-    desc: "Scholarships, books and learning centers for underprivileged children.",
-  },
-  {
-    img: winterImage,
-    icon: Snowflake,
-    title: "Winter Aid",
-    desc: "Distributing blankets and warm clothes to families every winter.",
-  },
-  {
-    img: medicalImage,
-    icon: Stethoscope,
-    title: "Medical Support",
-    desc: "Free medical camps and emergency healthcare for vulnerable groups.",
-  },
-  {
-    img: foodImage,
-    icon: HandHeart,
-    title: "Food Distribution",
-    desc: "Meal programs reaching families during Ramadan and crisis moments.",
-  },
-  {
-    img: orphanageMealImage,
-    icon: HomeIcon,
-    title: "Monthly Orphanage & Hifzkhana Meal Program",
-    desc: "Providing daily nutritious meals to orphanages and Quran memorization centers every month.",
-  },
-];
+const fallbacks: Record<string, string> = {
+  "Quality Education": educationImage,
+  "Food Campaign": foodImage,
+  "Free Medical Camp": medicalImage,
+  "Relief Campaign": reliefImage,
+  "Winter Aid": winterImage,
+  "Monthly Orphanage & Hifzkhana Meal Program": orphanageMealImage,
+};
+
+function getActivityIcon(iconName: string) {
+  const IconComponent = (LucideIcons as any)[iconName];
+  if (iconName === "Home" || iconName === "HomeIcon") {
+    return LucideIcons.HomeIcon || LucideIcons.Home || LucideIcons.HandHeart;
+  }
+  return IconComponent || LucideIcons.HandHeart;
+}
 
 const testimonials = [
   {
@@ -132,6 +115,20 @@ type CampaignSummary = {
   banner_url?: string | null;
 };
 
+interface ActivityItem {
+  id?: string;
+  title: string;
+  title_bn?: string | null;
+  bn?: string | null;
+  description?: string | null;
+  image_url?: string | null;
+  icon_name?: string;
+  sort_order?: number;
+  show_on_homepage?: boolean;
+  published?: boolean;
+  is_active?: boolean;
+}
+
 function Home() {
   const campaignsFn = getPublicCampaigns;
   const { data: dbCampaigns } = useQuery({
@@ -141,6 +138,18 @@ function Home() {
   const campaigns = ((dbCampaigns ?? []) as CampaignSummary[])
     .filter((c) => c.status === "active")
     .slice(0, 3);
+
+  const { data: dbActivities } = useQuery({
+    queryKey: ["public-activities"],
+    queryFn: () => getPublicActivities(),
+  });
+
+  const activeActivities = useMemo(() => {
+    const list = (dbActivities ?? []) as ActivityItem[];
+    return list
+      .filter((a) => a.show_on_homepage === true && a.published !== false && a.is_active !== false)
+      .sort((a, b) => Number(a.sort_order ?? 0) - Number(b.sort_order ?? 0));
+  }, [dbActivities]);
 
   const { data: dbSettings } = useQuery({
     queryKey: ["public-settings"],
@@ -157,7 +166,9 @@ function Home() {
     return map;
   }, [dbSettings]);
 
-  const displayHeroText = settingsMap.home_hero_text || "A youth-led, humanitarian organization, making compassion a reality in Bangladesh through free education, livelihoods, healthcare, sustainable employment, and emergency relief work.";
+  const displayHeroText =
+    settingsMap.home_hero_text ||
+    "A youth-led, humanitarian organization, making compassion a reality in Bangladesh through free education, livelihoods, healthcare, sustainable employment, and emergency relief work.";
   const displayHeroImage = settingsMap.home_hero_image || heroImage;
   const displayHeroImageMobile = settingsMap.home_hero_image_mobile || displayHeroImage;
 
@@ -226,7 +237,10 @@ function Home() {
           className="grid grid-cols-2 lg:grid-cols-4 gap-4 glass-strong rounded-3xl p-6 lg:p-8 shadow-elevated"
         >
           {stats.map((s, i) => (
-            <div key={i} className="flex flex-col items-center justify-center text-center p-2 h-full">
+            <div
+              key={i}
+              className="flex flex-col items-center justify-center text-center p-2 h-full"
+            >
               <div className="inline-flex h-12 w-12 rounded-2xl bg-emerald-gradient text-primary-foreground items-center justify-center mb-3 shadow-glow shrink-0">
                 <s.icon className="h-5 w-5" />
               </div>
@@ -341,12 +355,19 @@ function Home() {
 
       {/* SHOKKOM FOUNDATION FEATURED */}
       <section className="w-full max-w-full mt-32 px-4 sm:px-6 lg:px-8 overflow-hidden">
-        <motion.div {...fade} className="relative overflow-hidden rounded-2xl sm:rounded-[2rem] shadow-elevated w-full max-w-5xl mx-auto bg-card border border-emerald-100/10">
+        <motion.div
+          {...fade}
+          className="relative overflow-hidden rounded-2xl sm:rounded-[2rem] shadow-elevated w-full max-w-5xl mx-auto bg-card border border-emerald-100/10"
+        >
           <div className="grid grid-cols-1 lg:grid-cols-2 w-full">
             <div className="relative w-full aspect-video lg:aspect-auto lg:min-h-[480px] overflow-hidden">
               <ResponsiveHeroImage
                 desktopSrc={settingsMap.home_sokkhom_featured_image || sokkhomImage}
-                mobileSrc={settingsMap.home_sokkhom_featured_image_mobile || settingsMap.home_sokkhom_featured_image || sokkhomImage}
+                mobileSrc={
+                  settingsMap.home_sokkhom_featured_image_mobile ||
+                  settingsMap.home_sokkhom_featured_image ||
+                  sokkhomImage
+                }
                 alt="Shokkhom Foundation"
               />
               <div className="absolute inset-0 bg-gradient-to-tr from-black/40 to-transparent" />
@@ -372,7 +393,10 @@ function Home() {
                   { n: 18, l: "Active beneficiaries" },
                   { n: 96, suffix: "%", l: "Still self-reliant" },
                 ].map((s, i) => (
-                  <div key={i} className="glass rounded-xl p-3 text-left sm:text-center w-full flex sm:flex-col items-center sm:items-center justify-start sm:justify-center gap-3 sm:gap-1 min-h-[56px] sm:min-h-[80px]">
+                  <div
+                    key={i}
+                    className="glass rounded-xl p-3 text-left sm:text-center w-full flex sm:flex-col items-center sm:items-center justify-start sm:justify-center gap-3 sm:gap-1 min-h-[56px] sm:min-h-[80px]"
+                  >
                     <div className="text-lg sm:text-2xl font-bold text-gradient leading-none shrink-0">
                       <AnimatedCounter value={s.n} suffix={s.suffix ?? "+"} />
                     </div>
@@ -467,34 +491,47 @@ function Home() {
         </motion.div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {activities.map((a, i) => (
-            <motion.div
-              key={i}
-              {...fade}
-              transition={{ ...fade.transition, delay: i * 0.08 }}
-              className="group relative rounded-3xl overflow-hidden aspect-4/3 shadow-soft hover:shadow-elevated transition-all"
-            >
-              <img
-                src={a.img}
-                alt={a.title}
-                loading="lazy"
-                width={1024}
-                height={768}
-                className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
-              <div className="absolute inset-0 p-6 flex flex-col justify-end text-white">
-                <div className="h-11 w-11 rounded-xl bg-warm-gradient text-accent-foreground flex items-center justify-center mb-3 shadow-glow">
-                  <a.icon className="h-5 w-5" />
-                </div>
-                <h3 className="font-display font-bold text-xl">{a.title}</h3>
+          {activeActivities.map((a: any, i) => {
+            const Icon = getActivityIcon(a.icon_name || "");
+            const displayImage = a.image_url || fallbacks[a.title] || foodImage;
+            return (
+              <motion.div
+                key={a.id || a.title}
+                {...fade}
+                transition={{ ...fade.transition, delay: i * 0.08 }}
+                className="group relative rounded-3xl overflow-hidden aspect-4/3 shadow-soft hover:shadow-elevated transition-all"
+              >
+                <img
+                  src={displayImage}
+                  alt={a.title}
+                  loading="lazy"
+                  width={1024}
+                  height={768}
+                  className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+                <div className="absolute inset-0 p-6 flex flex-col justify-end text-white">
+                  <div className="h-11 w-11 rounded-xl bg-warm-gradient text-accent-foreground flex items-center justify-center mb-3 shadow-glow">
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <h3 className="font-display font-bold text-xl">{a.title}</h3>
 
-                <p className="text-sm opacity-80 mt-2 max-h-0 group-hover:max-h-32 overflow-hidden transition-all duration-500">
-                  {a.desc}
-                </p>
-              </div>
-            </motion.div>
-          ))}
+                  <p className="text-sm opacity-80 mt-2 max-h-0 group-hover:max-h-32 overflow-hidden transition-all duration-500">
+                    {a.description}
+                  </p>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
+
+        <div className="text-center mt-12">
+          <Link
+            to="/activities"
+            className="inline-flex items-center gap-2 bg-emerald-gradient text-primary-foreground px-6 py-3 rounded-xl font-semibold shadow-glow hover:scale-[1.03] active:scale-95 transition-transform"
+          >
+            View All Activities <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
       </section>
 

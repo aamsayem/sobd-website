@@ -15,7 +15,7 @@ async function run() {
     const settings = await SiteSetting.find({});
     console.log("SETTINGS FOUND IN DB:", settings.length);
     settings.forEach(s => {
-      console.log(`- ${s.key}: ${s.value}`);
+      console.log(JSON.stringify(s.toObject(), null, 2));
     });
     
     const activities = await Activity.find({});

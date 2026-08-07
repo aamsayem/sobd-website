@@ -69,7 +69,7 @@ const bankDetails = [
 ];
 
 const transparencyStats = [
-  { icon: HandHeart, value: "৳ 1.2Cr+", label: "Total Raised" },
+  { icon: HandHeart, value: "৳1.2Cr+", label: "Total Raised" },
   { icon: Sparkles, value: "12", label: "Ongoing Campaigns" },
   { icon: Users, value: "52,000+", label: "Beneficiaries Supported" },
   { icon: MapPin, value: "38", label: "Upazilas Covered" },
@@ -563,7 +563,7 @@ function DonatePage() {
               Your trust, accounted for.
             </h2>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 glass-strong rounded-3xl p-6 lg:p-8 shadow-elevated">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 glass-strong rounded-3xl p-6 lg:p-8 shadow-elevated">
             {transparencyStats.map((s, i) => (
               <div key={i} className="text-center px-4 py-3">
                 <div className="inline-flex h-12 w-12 rounded-2xl bg-emerald-gradient text-primary-foreground items-center justify-center mb-3 shadow-glow">

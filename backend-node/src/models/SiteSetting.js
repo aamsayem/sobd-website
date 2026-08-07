@@ -11,7 +11,7 @@ const siteSettingSchema = new mongoose.Schema(
     },
     value: {
       type: String,
-      required: true,
+      default: "",
     },
     // BaseModel fields
     created_by: {

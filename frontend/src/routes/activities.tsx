@@ -48,6 +48,19 @@ const fallbacks: Record<string, string> = {
   "Monthly Orphanage & Hifzkhana Meal Program": orphanageMealImage,
 };
 
+interface ActivityItem {
+  id?: string;
+  title: string;
+  title_bn?: string | null;
+  bn?: string | null;
+  description?: string | null;
+  image_url?: string | null;
+  icon_name?: string;
+  sort_order?: number;
+  published?: boolean;
+  is_active?: boolean;
+}
+
 function getActivityIcon(iconName: string) {
   const IconComponent = (LucideIcons as any)[iconName];
   if (iconName === "Home" || iconName === "HomeIcon") {
@@ -62,7 +75,9 @@ function ActivitiesPage() {
     queryFn: () => getPublicActivities(),
   });
 
-  const list = (data ?? []) as any[];
+  const list = ((data ?? []) as ActivityItem[]).filter(
+    (activity) => activity.published !== false && activity.is_active !== false,
+  );
 
   return (
     <>
@@ -99,7 +114,9 @@ function ActivitiesPage() {
                       <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
                         <Icon className="h-5 w-5" />
                       </div>
-                      <p className="font-bn text-sm font-semibold text-primary">{activity.title_bn || activity.bn}</p>
+                      <p className="font-bn text-sm font-semibold text-primary">
+                        {activity.title_bn || activity.bn}
+                      </p>
                       <h2 className="mt-2 font-display text-3xl font-bold leading-tight sm:text-4xl">
                         {activity.title}
                       </h2>

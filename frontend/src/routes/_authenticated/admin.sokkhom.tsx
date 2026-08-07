@@ -4,7 +4,18 @@ import { useMemo, useState } from "react";
 import { api } from "@/lib/api";
 import { updateSubmissionStatus, deleteSubmission } from "@/lib/submissions.functions";
 import { ImageUploader } from "@/components/admin/ImageUploader";
-import { Search, CheckCircle2, XCircle, Trash2, Loader2, X, Eye, Clock, Plus, Pencil } from "lucide-react";
+import {
+  Search,
+  CheckCircle2,
+  XCircle,
+  Trash2,
+  Loader2,
+  X,
+  Eye,
+  Clock,
+  Plus,
+  Pencil,
+} from "lucide-react";
 import { toast } from "sonner";
 import { getErrorMessage } from "@/lib/utils";
 
@@ -158,7 +169,9 @@ function SokkhomPage() {
     <div className="p-6 lg:p-10 max-w-7xl">
       <header className="mb-6">
         <h1 className="text-3xl font-bold text-emerald-950">Shokkhom Foundation</h1>
-        <p className="text-sm text-emerald-700 mt-1">Manage livelihood requests and success stories.</p>
+        <p className="text-sm text-emerald-700 mt-1">
+          Manage livelihood requests and success stories.
+        </p>
       </header>
 
       {/* Tabs */}
@@ -166,7 +179,9 @@ function SokkhomPage() {
         <button
           onClick={() => setTab("applications")}
           className={`pb-3 font-semibold text-sm transition-all relative ${
-            tab === "applications" ? "text-emerald-950" : "text-emerald-600/70 hover:text-emerald-600"
+            tab === "applications"
+              ? "text-emerald-950"
+              : "text-emerald-600/70 hover:text-emerald-600"
           }`}
         >
           Livelihood Applications
@@ -239,7 +254,9 @@ function SokkhomPage() {
                   {filtered.map((a) => (
                     <tr key={a.id} className="border-t border-emerald-100 hover:bg-emerald-50/30">
                       <td className="px-4 py-3 font-mono text-xs">{a.application_code}</td>
-                      <td className="px-4 py-3 font-semibold text-emerald-950">{a.applicant_name}</td>
+                      <td className="px-4 py-3 font-semibold text-emerald-950">
+                        {a.applicant_name}
+                      </td>
                       <td className="px-4 py-3">{a.occupation}</td>
                       <td className="px-4 py-3">
                         {a.income ? Number(a.income).toLocaleString() : "—"}
@@ -261,7 +278,11 @@ function SokkhomPage() {
                             </IconBtn>
                           )}
                           {a.status !== "approved" && (
-                            <IconBtn onClick={() => setSt(a, "approved")} title="Approve" tone="green">
+                            <IconBtn
+                              onClick={() => setSt(a, "approved")}
+                              title="Approve"
+                              tone="green"
+                            >
                               <CheckCircle2 className="h-4 w-4" />
                             </IconBtn>
                           )}
@@ -305,7 +326,7 @@ function SokkhomPage() {
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {storiesData.map((s) => {
-                const imgPath = s.image_url || (s.image?.file_path || s.image?.url);
+                const imgPath = s.image_url || s.image?.file_path || s.image?.url;
                 return (
                   <div
                     key={s.id}
@@ -322,14 +343,18 @@ function SokkhomPage() {
                       <div className="absolute top-3 left-3 bg-emerald-800/90 text-white px-2 py-0.5 rounded-md text-[10px] font-semibold">
                         Order: {s.display_order}
                       </div>
-                      <div className={`absolute top-3 right-3 px-2 py-0.5 rounded-md text-[10px] font-semibold text-white ${s.is_active ? "bg-emerald-600" : "bg-zinc-500"}`}>
+                      <div
+                        className={`absolute top-3 right-3 px-2 py-0.5 rounded-md text-[10px] font-semibold text-white ${s.is_active ? "bg-emerald-600" : "bg-zinc-500"}`}
+                      >
                         {s.is_active ? "Published" : "Draft"}
                       </div>
                     </div>
                     <div className="p-5 flex-1 flex flex-col justify-between">
                       <div>
                         <h3 className="font-bold text-lg text-emerald-950">{s.name}</h3>
-                        {s.title && <p className="text-xs font-medium text-emerald-700 mt-0.5">{s.title}</p>}
+                        {s.title && (
+                          <p className="text-xs font-medium text-emerald-700 mt-0.5">{s.title}</p>
+                        )}
                         {s.before && (
                           <p className="text-xs text-zinc-500 mt-2 line-clamp-2">
                             <strong>Before:</strong> {s.before}
@@ -446,7 +471,10 @@ function DetailModal({ app, onClose }: { app: App; onClose: () => void }) {
         </div>
         <div className="p-6 space-y-3">
           {fields.map(([k, v]) => (
-            <div key={k} className="grid grid-cols-1 sm:grid-cols-3 gap-1 sm:gap-3 text-sm border-b border-emerald-50 pb-2">
+            <div
+              key={k}
+              className="grid grid-cols-1 sm:grid-cols-3 gap-1 sm:gap-3 text-sm border-b border-emerald-50 pb-2"
+            >
               <div className="text-emerald-700 font-medium">{k}</div>
               <div className="sm:col-span-2 text-emerald-950 break-words whitespace-pre-wrap">
                 {v || "—"}
@@ -484,7 +512,10 @@ function StoryEditModal({ story, onClose, onSave }: StoryEditModalProps) {
           <h3 className="font-bold text-emerald-950 text-lg">
             {story.id ? "Edit Success Story" : "Add Success Story"}
           </h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-emerald-50 text-emerald-800 transition-colors">
+          <button
+            onClick={onClose}
+            className="p-1.5 rounded-lg hover:bg-emerald-50 text-emerald-800 transition-colors"
+          >
             <X className="h-5 w-5" />
           </button>
         </div>
@@ -575,7 +606,10 @@ function StoryEditModal({ story, onClose, onSave }: StoryEditModalProps) {
                 onChange={(e) => setForm({ ...form, is_active: e.target.checked })}
                 className="h-4.5 w-4.5 rounded border-emerald-300 text-emerald-600 focus:ring-emerald-500"
               />
-              <label htmlFor="is_active" className="text-sm font-semibold text-emerald-800 cursor-pointer">
+              <label
+                htmlFor="is_active"
+                className="text-sm font-semibold text-emerald-800 cursor-pointer"
+              >
                 Publish immediately (Visible on website)
               </label>
             </div>

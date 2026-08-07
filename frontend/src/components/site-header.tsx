@@ -42,11 +42,11 @@ export function SiteHeader() {
               alt="SELFLESS ORGANIZATION BD"
               className="h-10 w-10 object-contain transition-transform group-hover:scale-105 shrink-0"
             />
-            <div className="hidden sm:flex flex-col leading-tight min-w-0">
-              <span className="font-display font-bold text-[12px] lg:text-[13px] text-ink whitespace-nowrap">
+            <div className="flex flex-col leading-none sm:leading-tight min-w-0">
+              <span className="font-display font-bold text-[9.5px] min-[360px]:text-[11px] sm:text-[12px] lg:text-[13px] text-ink whitespace-nowrap">
                 SELFLESS ORGANIZATION BD
               </span>
-              <span className="text-[9px] lg:text-[10px] text-muted-foreground tracking-wide whitespace-nowrap">
+              <span className="text-[7.5px] min-[360px]:text-[8.5px] sm:text-[9px] lg:text-[10px] text-muted-foreground tracking-wide whitespace-nowrap mt-0.5 sm:mt-0">
                 A HUMANITARIAN ORGANIZATION
               </span>
             </div>

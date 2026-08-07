@@ -293,7 +293,10 @@ function DetailModal({ app, onClose }: { app: App; onClose: () => void }) {
         </div>
         <div className="p-6 space-y-3">
           {fields.map(([k, v]) => (
-            <div key={k} className="grid grid-cols-1 sm:grid-cols-3 gap-1 sm:gap-3 text-sm border-b border-emerald-50 pb-2">
+            <div
+              key={k}
+              className="grid grid-cols-1 sm:grid-cols-3 gap-1 sm:gap-3 text-sm border-b border-emerald-50 pb-2"
+            >
               <div className="text-emerald-700 font-medium">{k}</div>
               <div className="sm:col-span-2 text-emerald-950 break-words">{v || "—"}</div>
             </div>

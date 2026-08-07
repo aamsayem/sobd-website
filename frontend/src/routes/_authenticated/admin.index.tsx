@@ -117,7 +117,9 @@ function Dashboard() {
         <h2 className="font-bold text-lg text-emerald-950 mb-2">Quick Tips</h2>
         <ul className="text-sm text-emerald-800 space-y-1.5 list-disc list-inside">
           <li>
-            Use <strong>Website Settings</strong> in the sidebar (just below Dashboard) to change the Home hero copy, Home Hero background, Shokkhom page Hero background, and Shokkhom page gallery images.
+            Use <strong>Website Settings</strong> in the sidebar (just below Dashboard) to change
+            the Home hero copy, Home Hero background, Shokkhom page Hero background, and Shokkhom
+            page gallery images.
           </li>
           <li>
             Use <strong>Urgent Campaigns</strong> to publish fundraising drives that show on the

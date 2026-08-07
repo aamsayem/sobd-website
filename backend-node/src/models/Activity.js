@@ -55,6 +55,14 @@ const activitySchema = new mongoose.Schema(
       default: true,
       index: true,
     },
+    show_on_homepage: {
+      type: Boolean,
+      default: false,
+    },
+    published: {
+      type: Boolean,
+      default: true,
+    },
   },
   {
     timestamps: { createdAt: "created_at", updatedAt: "updated_at" },

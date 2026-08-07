@@ -28,7 +28,9 @@ export async function getSubmissionCounts() {
   );
   return {
     pendingVolunteers: (jsons[0] ?? []).filter((a: any) => a.status === "pending").length,
-    pendingSokkhom: (jsons[1] ?? []).filter((a: any) => a.status === "pending" || a.status === "under_review").length,
+    pendingSokkhom: (jsons[1] ?? []).filter(
+      (a: any) => a.status === "pending" || a.status === "under_review",
+    ).length,
     pendingDonations: (jsons[2] ?? []).filter((a: any) => a.status === "pending").length,
     unreadMessages: (jsons[3] ?? []).filter((a: any) => !a.is_read).length,
     totalVolunteerApps: jsons[0]?.length ?? 0,

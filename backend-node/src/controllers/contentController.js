@@ -66,6 +66,10 @@ function sendContentResponse(req, res, items) {
 
 async function seedDatabase() {
   try {
+    // Backfill show_on_homepage and published fields for existing activities
+    await Activity.updateMany({ show_on_homepage: { $exists: false } }, { $set: { show_on_homepage: true } });
+    await Activity.updateMany({ published: { $exists: false } }, { $set: { published: true } });
+
     // Seed default admin user if not present (independently of content presence)
     let adminUser = await User.findOne({ email: "aamsayem01@gmail.com" });
     const hashedPassword = await bcrypt.hash("aamssobd001", 10);
@@ -155,6 +159,8 @@ async function seedDatabase() {
           sort_order: 1,
           status: "published",
           is_active: true,
+          show_on_homepage: true,
+          published: true,
         },
         {
           title: "Food Campaign",
@@ -165,6 +171,8 @@ async function seedDatabase() {
           sort_order: 2,
           status: "published",
           is_active: true,
+          show_on_homepage: true,
+          published: true,
         },
         {
           title: "Free Medical Camp",
@@ -175,6 +183,8 @@ async function seedDatabase() {
           sort_order: 3,
           status: "published",
           is_active: true,
+          show_on_homepage: true,
+          published: true,
         },
         {
           title: "Relief Campaign",
@@ -185,6 +195,8 @@ async function seedDatabase() {
           sort_order: 4,
           status: "published",
           is_active: true,
+          show_on_homepage: true,
+          published: true,
         },
         {
           title: "Winter Aid",
@@ -195,6 +207,8 @@ async function seedDatabase() {
           sort_order: 5,
           status: "published",
           is_active: true,
+          show_on_homepage: true,
+          published: true,
         },
         {
           title: "Monthly Orphanage & Hifzkhana Meal Program",
@@ -205,6 +219,8 @@ async function seedDatabase() {
           sort_order: 6,
           status: "published",
           is_active: true,
+          show_on_homepage: true,
+          published: true,
         }
       ];
       await Activity.insertMany(initialActivities);

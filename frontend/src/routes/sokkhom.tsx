@@ -187,13 +187,13 @@ function Sokkhom() {
       <section className="container mx-auto px-4 -mt-12 relative z-10">
         <motion.div
           {...fade}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 glass-strong rounded-3xl p-6 lg:p-8 shadow-elevated"
+          className="grid grid-cols-2 lg:grid-cols-4 gap-4 glass-strong rounded-3xl p-6 lg:p-8 shadow-elevated"
         >
           {[
-            { i: Users, n: 42, s: "+", l: "Families empowered" },
-            { i: TrendingUp, n: 96, s: "%", l: "Still self-reliant" },
-            { i: Sprout, n: 18, s: "+", l: "Active beneficiaries" },
-            { i: ShieldCheck, n: 12, s: "+", l: "Districts reached" },
+            { i: Users, n: 42, s: "+", l: "Families Empowered" },
+            { i: Sprout, n: 18, s: "+", l: "Active Beneficiaries" },
+            { i: TrendingUp, n: 96, s: "%", l: "Still Self-Reliant" },
+            { i: ShieldCheck, n: 12, s: "+", l: "Districts Reached" },
           ].map((s, i) => (
             <div key={i} className="text-center px-4 py-3">
               <div className="inline-flex h-12 w-12 rounded-2xl bg-emerald-gradient text-primary-foreground items-center justify-center mb-3 shadow-glow">
@@ -294,23 +294,6 @@ function Sokkhom() {
               <p className="font-bn opacity-90 mt-3 max-w-lg">
                 আপনার একটি অনুদান একটি পরিবারের সারাজীবনের জন্য আয়ের পথ তৈরি করতে পারে।
               </p>
-              <div className="mt-7">
-                <div className="h-3 rounded-full bg-white/15 overflow-hidden">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    whileInView={{ width: `${pct}%` }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 1.2, ease: "easeOut" }}
-                    className="h-full bg-warm-gradient"
-                  />
-                </div>
-                <div className="mt-2 flex justify-between text-sm opacity-90">
-                  <span className="font-semibold">৳ {raised}L raised</span>
-                  <span>
-                    of ৳ {target}L · {pct}%
-                  </span>
-                </div>
-              </div>
             </div>
             <div className="flex flex-col gap-3">
               {[1000, 5000, 10000, 25000].map((a) => (
@@ -351,8 +334,8 @@ function Sokkhom() {
         </motion.div>
         <div className="grid md:grid-cols-3 gap-6">
           {activeStories.map((s: any, i: number) => {
-            const hasImage = s.image_url || (s.image?.file_path || s.image?.url);
-            const imagePath = s.image_url || (s.image?.file_path || s.image?.url);
+            const hasImage = s.image_url || s.image?.file_path || s.image?.url;
+            const imagePath = s.image_url || s.image?.file_path || s.image?.url;
             return (
               <motion.article
                 key={s.id || i}

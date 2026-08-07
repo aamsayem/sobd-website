@@ -19,6 +19,8 @@ type Activity = {
   image_url?: string | null;
   icon_name: string;
   sort_order: number;
+  show_on_homepage: boolean;
+  published: boolean;
 };
 
 const empty: Activity = {
@@ -28,6 +30,8 @@ const empty: Activity = {
   image_url: "",
   icon_name: "HandHeart",
   sort_order: 0,
+  show_on_homepage: false,
+  published: true,
 };
 
 const AVAILABLE_ICONS = [
@@ -180,7 +184,9 @@ function ActivitiesAdmin() {
                   type="number"
                   required
                   value={editing.sort_order}
-                  onChange={(e) => setEditing({ ...editing, sort_order: parseInt(e.target.value) || 0 })}
+                  onChange={(e) =>
+                    setEditing({ ...editing, sort_order: parseInt(e.target.value) || 0 })
+                  }
                   className="w-full rounded-xl border border-emerald-100 bg-emerald-50/20 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600"
                 />
               </div>
@@ -196,6 +202,28 @@ function ActivitiesAdmin() {
                 onChange={(e) => setEditing({ ...editing, description: e.target.value })}
                 className="w-full rounded-xl border border-emerald-100 bg-emerald-50/20 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600"
               />
+            </div>
+
+            <div className="flex flex-wrap gap-6 py-2">
+              <label className="flex items-center gap-2 text-sm font-semibold text-emerald-800 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={editing.show_on_homepage ?? false}
+                  onChange={(e) => setEditing({ ...editing, show_on_homepage: e.target.checked })}
+                  className="rounded border-emerald-300 text-emerald-600 focus:ring-emerald-500 h-4.5 w-4.5"
+                />
+                Show on Home Page
+              </label>
+
+              <label className="flex items-center gap-2 text-sm font-semibold text-emerald-800 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={editing.published ?? true}
+                  onChange={(e) => setEditing({ ...editing, published: e.target.checked })}
+                  className="rounded border-emerald-300 text-emerald-600 focus:ring-emerald-500 h-4.5 w-4.5"
+                />
+                Published (visible on website)
+              </label>
             </div>
 
             <div>
@@ -252,14 +280,28 @@ function ActivitiesAdmin() {
                 </div>
               </div>
               <div className="p-5 flex-1 flex flex-col">
-                <div className="flex items-center gap-2 mb-2">
+                <div className="flex items-center gap-2 mb-2 flex-wrap">
                   <span className="text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-semibold">
                     {a.icon_name}
                   </span>
+                  <span
+                    className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded inline-flex items-center gap-1 ${a.published !== false ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"}`}
+                  >
+                    {a.published !== false ? "Published" : "Draft"}
+                  </span>
+                  {a.show_on_homepage && (
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-100 text-blue-700">
+                      Home Page
+                    </span>
+                  )}
                 </div>
                 <h3 className="font-bold text-lg text-emerald-950 line-clamp-1">{a.title}</h3>
-                {a.title_bn && <p className="text-xs text-emerald-700 font-bn mt-0.5">{a.title_bn}</p>}
-                <p className="text-sm text-emerald-800/80 mt-2 line-clamp-3 flex-1">{a.description}</p>
+                {a.title_bn && (
+                  <p className="text-xs text-emerald-700 font-bn mt-0.5">{a.title_bn}</p>
+                )}
+                <p className="text-sm text-emerald-800/80 mt-2 line-clamp-3 flex-1">
+                  {a.description}
+                </p>
                 <div className="flex gap-2 mt-5 pt-4 border-t border-emerald-50">
                   <button
                     onClick={() => setEditing(a)}

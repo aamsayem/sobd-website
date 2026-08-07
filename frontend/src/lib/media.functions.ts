@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { apiFetchRaw } from "@/lib/api";
+import { apiFetchRaw, apiFetch } from "@/lib/api";
 
 export const MEDIA_BUCKET = "site-media";
 export const DONATION_SCREENSHOT_BUCKET = "donation-screenshots";
@@ -98,7 +98,7 @@ function base64ToUint8Array(base64: string): Uint8Array {
   return bytes;
 }
 
-export async function uploadMedia(data: unknown) {
+export async function uploadMedia(data: unknown, onProgress?: (percent: number) => void) {
   const actualData = data && typeof data === "object" && "data" in data ? (data as any).data : data;
   const parsed = uploadSchema.parse(actualData);
   await assertAdmin();
@@ -110,18 +110,23 @@ export async function uploadMedia(data: unknown) {
   const form = new FormData();
   form.append("file", blob, parsed.filename);
 
-  const res = await apiFetchRaw("media/files/", { method: "POST", body: form });
-  if (!res.ok) {
-    const txt = await res.text();
-    throw new Error(txt || "Upload failed");
-  }
-  const json = await res.json();
+  const res = await apiFetch<any>("media/files/", {
+    method: "POST",
+    body: form,
+    onUploadProgress: (progressEvent) => {
+      if (onProgress && progressEvent.total) {
+        const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+        onProgress(percent);
+      }
+    },
+  });
+
   return {
-    id: json.id,
-    path: json.file_path,
-    url: json.url,
-    size: json.size,
-    contentType: json.mime_type || json.file_type,
+    id: res.id,
+    path: res.file_path,
+    url: res.url,
+    size: res.size,
+    contentType: res.mime_type || res.file_type,
   };
 }
 
@@ -180,7 +185,7 @@ export async function deleteMedia(data: unknown) {
   if (!res.ok) throw new Error("Failed to find media file");
   const json = await res.json();
   const items = Array.isArray(json) ? json : (json.results ?? []);
-  
+
   let foundId: string | null = null;
   for (const it of Array.isArray(items) ? items : []) {
     const item = it as Record<string, unknown>;
@@ -198,7 +203,9 @@ export async function deleteMedia(data: unknown) {
     const resFallback = await apiFetchRaw(`media/files/?page_size=1000`);
     if (resFallback.ok) {
       const jsonFallback = await resFallback.json();
-      const itemsFallback = Array.isArray(jsonFallback) ? jsonFallback : (jsonFallback.results ?? []);
+      const itemsFallback = Array.isArray(jsonFallback)
+        ? jsonFallback
+        : (jsonFallback.results ?? []);
       for (const it of Array.isArray(itemsFallback) ? itemsFallback : []) {
         const item = it as Record<string, unknown>;
         if (

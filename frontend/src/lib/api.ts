@@ -36,6 +36,7 @@ export interface ApiRequestOptions {
   query?: Record<string, string | number | boolean | null | undefined>;
   authToken?: string;
   credentials?: RequestCredentials;
+  onUploadProgress?: (progressEvent: any) => void;
 }
 
 function getAxiosClient() {
@@ -119,6 +120,7 @@ export async function apiFetch<T = unknown>(path: string, options: ApiRequestOpt
       params: options.query,
       data: options.body,
       withCredentials: options.credentials === "include",
+      onUploadProgress: options.onUploadProgress,
     });
     return response.data as T;
   } catch (error) {

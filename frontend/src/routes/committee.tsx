@@ -117,10 +117,15 @@ function Committee() {
           className="glass-strong rounded-3xl p-6 lg:p-8 shadow-elevated grid grid-cols-2 sm:grid-cols-3 gap-6"
         >
           <Stat icon={Users} value={totalMembers} label="Total members" />
+          <div className="block sm:hidden">
+            <Stat icon={Users} value={panelsCount} label="Total Panels" />
+          </div>
           <div className="hidden sm:block">
             <Stat icon={Users} value={panelsCount} label="Panels" />
           </div>
-          <Stat icon={Users} value={6} suffix="+" label="Years of leadership" />
+          <div className="hidden sm:block">
+            <Stat icon={Users} value={6} suffix="+" label="Years of leadership" />
+          </div>
         </motion.div>
       </section>
 
