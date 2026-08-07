@@ -372,6 +372,17 @@ async function seedDatabase() {
   }
 }
 
+function buildPopulatedQuery(query, Model) {
+  if (Model.schema.paths.created_by) query = query.populate("created_by");
+  if (Model.schema.paths.updated_by) query = query.populate("updated_by");
+  if (Model.schema.paths.image) query = query.populate("image");
+  if (Model.schema.paths.photo) query = query.populate("photo");
+  if (Model.schema.paths.featured_image) query = query.populate("featured_image");
+  if (Model.schema.paths.cover_image) query = query.populate("cover_image");
+  if (Model.schema.paths.images) query = query.populate("images");
+  return query;
+}
+
 async function listContent(req, res, next) {
   try {
     const resource = req.params.resource || "campaigns";
@@ -380,7 +391,8 @@ async function listContent(req, res, next) {
       return res.status(404).json({ success: false, message: `Resource ${resource} not found` });
     }
 
-    const docs = await Model.find({ is_active: true }).populate("created_by").populate("updated_by").populate("image");
+    const query = buildPopulatedQuery(Model.find({ is_active: true }), Model);
+    const docs = await query;
     const formatted = docs.map(doc => {
       const obj = doc.toObject();
       obj.id = obj._id.toString();
@@ -401,7 +413,8 @@ async function getContentById(req, res, next) {
       return res.status(404).json({ success: false, message: `Resource ${resource} not found` });
     }
 
-    const doc = await Model.findById(id).populate("created_by").populate("updated_by").populate("image");
+    const query = buildPopulatedQuery(Model.findById(id), Model);
+    const doc = await query;
     if (!doc) {
       return res.status(404).json({ success: false, message: "Content not found" });
     }
