@@ -152,7 +152,9 @@ export function ImageUploader({
         "application/pdf",
       ]);
       if (!allowedTypes.has(file.type.toLowerCase())) {
-        toast.error("Unsupported file type. Only PNG, JPEG, JPG, WEBP, GIF, BMP and PDF are allowed.");
+        toast.error(
+          "Unsupported file type. Only PNG, JPEG, JPG, WEBP, GIF, BMP and PDF are allowed.",
+        );
         return;
       }
 
@@ -171,7 +173,7 @@ export function ImageUploader({
         const base64 = await blobToBase64(blob);
         const res = await upload(
           { data: { folder, filename: file.name, contentType: type, base64 } },
-          (percent) => setUploadProgress(percent)
+          (percent) => setUploadProgress(percent),
         );
         onChange(res.url);
         toast.success("Uploaded to project storage");
@@ -245,7 +247,7 @@ export function ImageUploader({
                   <Loader2 className="h-4 w-4 animate-spin mb-1 text-emerald-400" />
                   <span className="text-[9px] font-bold">{uploadProgress}%</span>
                   <div className="w-full bg-white/30 h-1 rounded-full overflow-hidden mt-1 max-w-[80%]">
-                    <div 
+                    <div
                       className="bg-emerald-400 h-full transition-all duration-300"
                       style={{ width: `${uploadProgress}%` }}
                     />
@@ -254,7 +256,9 @@ export function ImageUploader({
               )}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-[11px] text-emerald-800 break-all leading-snug">{localPreview ? "Uploading local file..." : value}</p>
+              <p className="text-[11px] text-emerald-800 break-all leading-snug">
+                {localPreview ? "Uploading local file..." : value}
+              </p>
               {external && !localPreview && (
                 <p className="mt-1.5 inline-flex items-center gap-1 rounded-md bg-amber-100 text-amber-800 px-2 py-0.5 text-[10px] font-semibold">
                   <AlertTriangle className="h-3 w-3" /> External link — re-upload recommended

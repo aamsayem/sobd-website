@@ -162,7 +162,11 @@ function ReportsPage() {
               >
                 <div className="relative aspect-[16/9] w-full bg-emerald-100 overflow-hidden">
                   {r.cover_url ? (
-                    <img src={resolveImageUrl(r.cover_url)} alt={r.title} className="h-full w-full object-cover" />
+                    <img
+                      src={resolveImageUrl(r.cover_url)}
+                      alt={r.title}
+                      className="h-full w-full object-cover"
+                    />
                   ) : (
                     <div className="h-full w-full flex items-center justify-center text-emerald-500">
                       <FileText className="h-10 w-10" />

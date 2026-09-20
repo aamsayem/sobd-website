@@ -92,7 +92,10 @@ function ActivitiesPage() {
           <div className="space-y-8">
             {list.map((activity, index) => {
               const Icon = getActivityIcon(activity.icon_name || "");
-              const displayImage = resolveImageUrl(activity.image_url, fallbacks[activity.title] || foodImage);
+              const displayImage = resolveImageUrl(
+                activity.image_url,
+                fallbacks[activity.title] || foodImage,
+              );
               return (
                 <motion.article
                   key={activity.id || activity.title}

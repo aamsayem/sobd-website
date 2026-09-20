@@ -77,7 +77,9 @@ function SettingsAdmin() {
   useBlocker({
     shouldBlockFn: () => {
       if (hasUnsavedChanges()) {
-        const leave = window.confirm("You have unsaved changes. Are you sure you want to discard them?");
+        const leave = window.confirm(
+          "You have unsaved changes. Are you sure you want to discard them?",
+        );
         return !leave;
       }
       return false;

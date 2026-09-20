@@ -122,7 +122,11 @@ function CampaignsPage() {
               className="glass-strong rounded-2xl overflow-hidden border border-emerald-100"
             >
               {c.banner_url && (
-                <img src={resolveImageUrl(c.banner_url)} alt="" className="h-40 w-full object-cover" />
+                <img
+                  src={resolveImageUrl(c.banner_url)}
+                  alt=""
+                  className="h-40 w-full object-cover"
+                />
               )}
               <div className="p-5">
                 <div className="flex items-start justify-between gap-3">

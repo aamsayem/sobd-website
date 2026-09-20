@@ -130,7 +130,11 @@ function CommitteePage() {
             >
               <div className="aspect-square bg-emerald-gradient overflow-hidden">
                 {m.photo_url ? (
-                  <img src={resolveImageUrl(m.photo_url)} alt="" className="h-full w-full object-cover" />
+                  <img
+                    src={resolveImageUrl(m.photo_url)}
+                    alt=""
+                    className="h-full w-full object-cover"
+                  />
                 ) : (
                   <div className="h-full w-full flex items-center justify-center text-white text-5xl font-bold">
                     {m.full_name.charAt(0)}

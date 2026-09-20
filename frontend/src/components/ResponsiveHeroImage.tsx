@@ -26,7 +26,12 @@ export function ResponsiveHeroImage({
       {resolvedMobile && <source media="(max-width: 767px)" srcSet={resolvedMobile} />}
       {/* Target larger viewports with the desktop source */}
       {resolvedDesktop && <source media="(min-width: 768px)" srcSet={resolvedDesktop} />}
-      <img src={resolvedDesktop || resolvedMobile} alt={alt} className={className} loading="eager" />
+      <img
+        src={resolvedDesktop || resolvedMobile}
+        alt={alt}
+        className={className}
+        loading="eager"
+      />
     </picture>
   );
 }

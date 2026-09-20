@@ -270,7 +270,11 @@ function ActivitiesAdmin() {
             >
               <div className="h-40 bg-emerald-50 relative">
                 {a.image_url ? (
-                  <img src={resolveImageUrl(a.image_url)} alt="" className="w-full h-full object-cover" />
+                  <img
+                    src={resolveImageUrl(a.image_url)}
+                    alt=""
+                    className="w-full h-full object-cover"
+                  />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-emerald-300">
                     <Sprout className="h-12 w-12" />
