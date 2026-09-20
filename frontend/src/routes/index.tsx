@@ -29,11 +29,11 @@ import {
   getPublicActivities,
 } from "@/lib/public-content.functions";
 import * as LucideIcons from "lucide-react";
-import heroImage from "@/assets/Hero.png";
+import heroImage from "@/assets/sokkhom-hero.png";
 import reliefImage from "@/assets/Activities — Relief.png";
 import educationImage from "@/assets/Activities — Education.png";
 import medicalImage from "@/assets/Activities — Medical.png";
-import foodImage from "@/assets/Activities — Food.png";
+import foodImage from "@/assets/Activities — Food Distribution.png";
 import sokkhomImage from "@/assets/sokkhom-hero.png";
 import winterImage from "@/assets/Activities — Winter.png";
 import orphanageMealImage from "@/assets/Activities — Food Distribution.png";

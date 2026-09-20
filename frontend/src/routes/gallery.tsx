@@ -7,7 +7,7 @@ import { resolveImageUrl } from "@/lib/image-url";
 
 import imgRelief from "@/assets/Activities — Relief.png";
 import imgEdu from "@/assets/Activities — Education.png";
-import imgFood from "@/assets/Activities — Food.png";
+import imgFood from "@/assets/Activities — Food Distribution.png";
 import imgMedical from "@/assets/Activities — Medical.png";
 import imgWinter from "@/assets/Activities — Winter.png";
 import imgSokkhom from "@/assets/sokkhom-hero.png";

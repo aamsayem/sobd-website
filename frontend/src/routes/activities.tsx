@@ -7,7 +7,7 @@ import { PageHero, StubBody } from "@/components/page-hero";
 import { getPublicActivities } from "@/lib/public-content.functions";
 import { resolveImageUrl } from "@/lib/image-url";
 import educationImage from "@/assets/Activities — Education.png";
-import foodImage from "@/assets/Activities — Food.png";
+import foodImage from "@/assets/Activities — Food Distribution.png";
 import medicalImage from "@/assets/Activities — Medical.png";
 import reliefImage from "@/assets/Activities — Relief.png";
 import winterImage from "@/assets/Activities — Winter.png";

@@ -20,7 +20,7 @@ import { AnimatedCounter } from "@/components/animated-counter";
 import { api } from "@/lib/api";
 import { getPublicSettings } from "@/lib/public-content.functions";
 import sokkhomImage from "@/assets/sokkhom-hero.png";
-import foodImage from "@/assets/Activities — Food.png";
+import foodImage from "@/assets/Activities — Food Distribution.png";
 import educationImage from "@/assets/Activities — Education.png";
 import medicalImage from "@/assets/Activities — Medical.png";
 
