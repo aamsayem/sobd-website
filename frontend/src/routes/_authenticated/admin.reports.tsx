@@ -17,6 +17,7 @@ import {
 import { toast } from "sonner";
 import { ImageUploader } from "@/components/admin/ImageUploader";
 import { getErrorMessage } from "@/lib/utils";
+import { resolveImageUrl } from "@/lib/image-url";
 
 export const Route = createFileRoute("/_authenticated/admin/reports")({
   component: ReportsPage,
@@ -161,7 +162,7 @@ function ReportsPage() {
               >
                 <div className="relative aspect-[16/9] w-full bg-emerald-100 overflow-hidden">
                   {r.cover_url ? (
-                    <img src={r.cover_url} alt={r.title} className="h-full w-full object-cover" />
+                    <img src={resolveImageUrl(r.cover_url)} alt={r.title} className="h-full w-full object-cover" />
                   ) : (
                     <div className="h-full w-full flex items-center justify-center text-emerald-500">
                       <FileText className="h-10 w-10" />
@@ -408,7 +409,7 @@ function ViewModal({ report, onClose }: { report: Report; onClose: () => void })
       >
         {report.cover_url && (
           <img
-            src={report.cover_url}
+            src={resolveImageUrl(report.cover_url)}
             alt={report.title}
             className="w-full aspect-[16/9] object-cover"
           />

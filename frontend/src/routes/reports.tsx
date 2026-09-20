@@ -5,6 +5,7 @@ import { PageHero, StubBody } from "@/components/page-hero";
 import { getPublicReports } from "@/lib/public-content.functions";
 import { Loader2, FileText, Download, X, Calendar, Tag } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { resolveImageUrl } from "@/lib/image-url";
 
 export const Route = createFileRoute("/reports")({
   ssr: false,
@@ -62,7 +63,7 @@ function Reports() {
                 <div className="relative aspect-[16/10] w-full overflow-hidden bg-emerald-gradient">
                   {r.cover_url ? (
                     <img
-                      src={r.cover_url}
+                      src={resolveImageUrl(r.cover_url)}
                       alt={r.title}
                       loading="lazy"
                       className="h-full w-full object-cover"
@@ -96,7 +97,7 @@ function Reports() {
                   <div className="flex gap-2 mt-4 pt-4 border-t border-emerald-100">
                     {r.file_url && (
                       <a
-                        href={r.file_url}
+                        href={resolveImageUrl(r.file_url)}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1.5 text-sm font-semibold bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-xl"
@@ -136,7 +137,7 @@ function Reports() {
             >
               {detail.cover_url && (
                 <img
-                  src={detail.cover_url}
+                  src={resolveImageUrl(detail.cover_url)}
                   alt={detail.title}
                   className="w-full aspect-[16/9] object-cover"
                 />

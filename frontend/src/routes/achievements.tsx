@@ -5,6 +5,7 @@ import { PageHero, StubBody } from "@/components/page-hero";
 import { getPublicAchievements } from "@/lib/public-content.functions";
 import { getErrorMessage } from "@/lib/utils";
 import { Loader2, Trophy } from "lucide-react";
+import { resolveImageUrl } from "@/lib/image-url";
 
 export const Route = createFileRoute("/achievements")({
   head: () => ({
@@ -96,7 +97,7 @@ function Achievements() {
                 <div className="h-[200px] sm:h-[220px] bg-emerald-100/60 overflow-hidden">
                   {a.image_url ? (
                     <img
-                      src={a.image_url}
+                      src={resolveImageUrl(a.image_url)}
                       alt={a.title}
                       referrerPolicy="no-referrer"
                       className="h-full w-full object-cover object-center hover:scale-105 transition-transform duration-500"

@@ -4,6 +4,7 @@ import { ResponsiveHeroImage } from "@/components/ResponsiveHeroImage";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
+import { resolveImageUrl } from "@/lib/image-url";
 import {
   Heart,
   Users,
@@ -299,7 +300,7 @@ function Home() {
                   <div className="relative h-45 sm:h-50 md:h-55 lg:h-60 overflow-hidden rounded-t-3xl bg-muted">
                     {c.banner_url ? (
                       <img
-                        src={c.banner_url}
+                        src={resolveImageUrl(c.banner_url)}
                         alt={c.title}
                         loading="lazy"
                         referrerPolicy="no-referrer"
@@ -493,7 +494,7 @@ function Home() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {activeActivities.map((a: any, i) => {
             const Icon = getActivityIcon(a.icon_name || "");
-            const displayImage = a.image_url || fallbacks[a.title] || foodImage;
+            const displayImage = resolveImageUrl(a.image_url, fallbacks[a.title] || foodImage);
             return (
               <motion.div
                 key={a.id || a.title}

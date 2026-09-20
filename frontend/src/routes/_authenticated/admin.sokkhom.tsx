@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { getErrorMessage } from "@/lib/utils";
+import { resolveImageUrl } from "@/lib/image-url";
 
 export const Route = createFileRoute("/_authenticated/admin/sokkhom")({
   component: SokkhomPage,
@@ -326,7 +327,7 @@ function SokkhomPage() {
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {storiesData.map((s) => {
-                const imgPath = s.image_url || s.image?.file_path || s.image?.url;
+                const imgPath = resolveImageUrl(s.image_url || s.image?.file_path || s.image?.url);
                 return (
                   <div
                     key={s.id}

@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ResponsiveHeroImage } from "@/components/ResponsiveHeroImage";
 import { motion } from "framer-motion";
 import { useState, useMemo } from "react";
+import { resolveImageUrl } from "@/lib/image-url";
 import {
   Sprout,
   Heart,
@@ -128,10 +129,10 @@ function Sokkhom() {
   const displayHeroImage = settingsMap.sokkhom_hero_image || sokkhomImage;
   const displayHeroImageMobile = settingsMap.sokkhom_hero_image_mobile || displayHeroImage;
   const bottomImages = [
-    settingsMap.sokkhom_bottom_img_1 || sokkhomImage,
-    settingsMap.sokkhom_bottom_img_2 || foodImage,
-    settingsMap.sokkhom_bottom_img_3 || educationImage,
-    settingsMap.sokkhom_bottom_img_4 || medicalImage,
+    resolveImageUrl(settingsMap.sokkhom_bottom_img_1, sokkhomImage),
+    resolveImageUrl(settingsMap.sokkhom_bottom_img_2, foodImage),
+    resolveImageUrl(settingsMap.sokkhom_bottom_img_3, educationImage),
+    resolveImageUrl(settingsMap.sokkhom_bottom_img_4, medicalImage),
   ];
 
   return (
@@ -334,8 +335,9 @@ function Sokkhom() {
         </motion.div>
         <div className="grid md:grid-cols-3 gap-6">
           {activeStories.map((s: any, i: number) => {
-            const hasImage = s.image_url || s.image?.file_path || s.image?.url;
-            const imagePath = s.image_url || s.image?.file_path || s.image?.url;
+            const rawImagePath = s.image_url || s.image?.file_path || s.image?.url;
+            const imagePath = resolveImageUrl(rawImagePath);
+            const hasImage = !!imagePath;
             return (
               <motion.article
                 key={s.id || i}

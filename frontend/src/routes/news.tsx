@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { PageHero, StubBody } from "@/components/page-hero";
 import { getPublicNews } from "@/lib/public-content.functions";
 import { Loader2, Calendar } from "lucide-react";
+import { resolveImageUrl } from "@/lib/image-url";
 
 type NewsPost = {
   id: string;
@@ -45,7 +46,7 @@ function News() {
               >
                 {p.cover_url && (
                   <img
-                    src={p.cover_url}
+                    src={resolveImageUrl(p.cover_url)}
                     alt={p.title}
                     className="w-full aspect-video object-cover"
                   />

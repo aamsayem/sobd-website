@@ -7,6 +7,7 @@ import { Plus, Pencil, Trash2, Loader2, X, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import { ImageUploader } from "@/components/admin/ImageUploader";
 import { getErrorMessage } from "@/lib/utils";
+import { resolveImageUrl } from "@/lib/image-url";
 
 export const Route = createFileRoute("/_authenticated/admin/news")({
   component: NewsPage,
@@ -110,7 +111,7 @@ function NewsPage() {
             >
               {p.cover_url ? (
                 <img
-                  src={p.cover_url}
+                  src={resolveImageUrl(p.cover_url)}
                   alt=""
                   className="h-16 w-24 rounded-lg object-cover shrink-0"
                 />

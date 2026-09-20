@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { listMedia } from "@/lib/media.functions";
 import { Loader2, Search, X, FileText } from "lucide-react";
+import { resolveImageUrl } from "@/lib/image-url";
 
 export function humanSize(bytes: number) {
   if (!bytes) return "—";
@@ -57,7 +58,7 @@ export function MediaGrid({
                 </div>
               ) : (
                 <img
-                  src={f.url}
+                  src={resolveImageUrl(f.url)}
                   alt={f.name}
                   loading="lazy"
                   className="h-full w-full object-cover group-hover:scale-105 transition-transform"

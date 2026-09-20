@@ -7,6 +7,7 @@ import { Plus, Pencil, Trash2, Loader2, X } from "lucide-react";
 import { toast } from "sonner";
 import { ImageUploader } from "@/components/admin/ImageUploader";
 import { getErrorMessage } from "@/lib/utils";
+import { resolveImageUrl } from "@/lib/image-url";
 
 export const Route = createFileRoute("/_authenticated/admin/gallery")({
   component: GalleryPage,
@@ -94,7 +95,7 @@ function GalleryPage() {
               className="glass-strong rounded-2xl overflow-hidden border border-emerald-100 group relative"
             >
               <img
-                src={it.image_url}
+                src={resolveImageUrl(it.image_url)}
                 alt={it.title ?? ""}
                 className="w-full aspect-square object-cover"
               />

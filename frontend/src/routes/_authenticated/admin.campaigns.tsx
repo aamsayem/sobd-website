@@ -7,6 +7,7 @@ import { Plus, Pencil, Trash2, Loader2, X, Star } from "lucide-react";
 import { toast } from "sonner";
 import { ImageUploader } from "@/components/admin/ImageUploader";
 import { getErrorMessage } from "@/lib/utils";
+import { resolveImageUrl } from "@/lib/image-url";
 
 export const Route = createFileRoute("/_authenticated/admin/campaigns")({
   component: CampaignsPage,
@@ -121,7 +122,7 @@ function CampaignsPage() {
               className="glass-strong rounded-2xl overflow-hidden border border-emerald-100"
             >
               {c.banner_url && (
-                <img src={c.banner_url} alt="" className="h-40 w-full object-cover" />
+                <img src={resolveImageUrl(c.banner_url)} alt="" className="h-40 w-full object-cover" />
               )}
               <div className="p-5">
                 <div className="flex items-start justify-between gap-3">

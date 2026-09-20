@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { getErrorMessage } from "@/lib/utils";
+import { resolveImageUrl } from "@/lib/image-url";
 import { MediaPicker } from "./MediaPicker";
 
 export type Aspect = "square" | "wide" | "free";
@@ -233,7 +234,7 @@ export function ImageUploader({
                 </div>
               ) : (
                 <img
-                  src={localPreview || value || ""}
+                  src={localPreview || resolveImageUrl(value)}
                   alt=""
                   referrerPolicy="no-referrer"
                   className="h-full w-full object-cover"

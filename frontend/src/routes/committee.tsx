@@ -6,6 +6,7 @@ import { Search, Users, Loader2 } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
 import { AnimatedCounter } from "@/components/animated-counter";
 import { getPublicCommittee } from "@/lib/public-content.functions";
+import { resolveImageUrl } from "@/lib/image-url";
 
 export const Route = createFileRoute("/committee")({
   ssr: false,
@@ -186,9 +187,9 @@ function Committee() {
                   className="group glass-strong rounded-xl overflow-hidden flex flex-col hover:-translate-y-1 hover:scale-[1.02] hover:shadow-elevated transition-all duration-300"
                 >
                   <div className="relative aspect-square w-full overflow-hidden bg-emerald-gradient">
-                    {m.photo_url ? (
+                    {resolveImageUrl(m.photo_url) ? (
                       <img
-                        src={m.photo_url}
+                        src={resolveImageUrl(m.photo_url)}
                         alt={m.full_name}
                         loading="lazy"
                         referrerPolicy="no-referrer"
@@ -202,7 +203,7 @@ function Committee() {
                       />
                     ) : null}
                     <div
-                      style={{ display: m.photo_url ? "none" : "flex" }}
+                      style={{ display: resolveImageUrl(m.photo_url) ? "none" : "flex" }}
                       className="absolute inset-0 h-full w-full items-center justify-center text-white text-4xl sm:text-5xl font-display font-bold"
                     >
                       {m.full_name.charAt(0)}

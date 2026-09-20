@@ -11,6 +11,7 @@ import { ImageUploader } from "@/components/admin/ImageUploader";
 import { Plus, Pencil, Trash2, Loader2, X, Trophy, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import { getErrorMessage } from "@/lib/utils";
+import { resolveImageUrl } from "@/lib/image-url";
 
 export const Route = createFileRoute("/_authenticated/admin/achievements")({
   component: AchievementsAdmin,
@@ -134,7 +135,7 @@ function AchievementsAdmin() {
               <div className="aspect-video bg-emerald-100/60 overflow-hidden">
                 {a.image_url ? (
                   <img
-                    src={a.image_url}
+                    src={resolveImageUrl(a.image_url)}
                     alt=""
                     referrerPolicy="no-referrer"
                     className="h-full w-full object-cover"

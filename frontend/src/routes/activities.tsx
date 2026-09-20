@@ -5,6 +5,7 @@ import * as LucideIcons from "lucide-react";
 import { Loader2 } from "lucide-react";
 import { PageHero, StubBody } from "@/components/page-hero";
 import { getPublicActivities } from "@/lib/public-content.functions";
+import { resolveImageUrl } from "@/lib/image-url";
 import educationImage from "@/assets/Activities — Education.png";
 import foodImage from "@/assets/Activities — Food.png";
 import medicalImage from "@/assets/Activities — Medical.png";
@@ -91,7 +92,7 @@ function ActivitiesPage() {
           <div className="space-y-8">
             {list.map((activity, index) => {
               const Icon = getActivityIcon(activity.icon_name || "");
-              const displayImage = activity.image_url || fallbacks[activity.title] || foodImage;
+              const displayImage = resolveImageUrl(activity.image_url, fallbacks[activity.title] || foodImage);
               return (
                 <motion.article
                   key={activity.id || activity.title}

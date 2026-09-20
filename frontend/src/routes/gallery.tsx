@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { PageHero } from "@/components/page-hero";
 import { getPublicGallery } from "@/lib/public-content.functions";
 import { Loader2 } from "lucide-react";
+import { resolveImageUrl } from "@/lib/image-url";
 
 import imgRelief from "@/assets/Activities — Relief.png";
 import imgEdu from "@/assets/Activities — Education.png";
@@ -57,7 +58,7 @@ function Gallery() {
             {items.map((it) => (
               <figure key={it.id} className="break-inside-avoid">
                 <img
-                  src={it.image_url}
+                  src={resolveImageUrl(it.image_url)}
                   alt={it.title ?? ""}
                   loading="lazy"
                   className="w-full rounded-2xl shadow-soft hover:scale-[1.02] transition-transform"

@@ -6,6 +6,7 @@ import { ImageUploader } from "@/components/admin/ImageUploader";
 import { Plus, Pencil, Trash2, Loader2, X, Sprout } from "lucide-react";
 import { toast } from "sonner";
 import { getErrorMessage } from "@/lib/utils";
+import { resolveImageUrl } from "@/lib/image-url";
 
 export const Route = createFileRoute("/_authenticated/admin/activities")({
   component: ActivitiesAdmin,
@@ -269,7 +270,7 @@ function ActivitiesAdmin() {
             >
               <div className="h-40 bg-emerald-50 relative">
                 {a.image_url ? (
-                  <img src={a.image_url} alt="" className="w-full h-full object-cover" />
+                  <img src={resolveImageUrl(a.image_url)} alt="" className="w-full h-full object-cover" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-emerald-300">
                     <Sprout className="h-12 w-12" />

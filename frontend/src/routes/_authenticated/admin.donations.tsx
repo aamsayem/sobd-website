@@ -6,6 +6,7 @@ import { updateSubmissionStatus, deleteSubmission } from "@/lib/submissions.func
 import { Search, CheckCircle2, XCircle, Trash2, Loader2, X, Eye, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import { getErrorMessage } from "@/lib/utils";
+import { resolveImageUrl } from "@/lib/image-url";
 
 export const Route = createFileRoute("/_authenticated/admin/donations")({
   component: DonationsPage,
@@ -257,7 +258,8 @@ function DonationsPage() {
 }
 
 function ScreenshotPreview({ proof }: { proof: any }) {
-  const url = typeof proof === "string" ? proof : (proof?.url ?? "");
+  const rawUrl = typeof proof === "string" ? proof : (proof?.url ?? "");
+  const url = resolveImageUrl(rawUrl);
   if (!url) return null;
   return (
     <div className="space-y-2">

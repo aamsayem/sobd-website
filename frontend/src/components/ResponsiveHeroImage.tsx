@@ -1,8 +1,9 @@
 import React from "react";
+import { resolveImageUrl } from "@/lib/image-url";
 
 interface ResponsiveHeroImageProps {
   desktopSrc: string;
-  mobileSrc: string;
+  mobileSrc?: string | null;
   alt: string;
   className?: string;
 }
@@ -13,17 +14,17 @@ export function ResponsiveHeroImage({
   alt,
   className = "absolute inset-0 h-full w-full object-cover",
 }: ResponsiveHeroImageProps) {
-  // If no mobileSrc is provided, fall back to desktopSrc and vice versa
-  const actualDesktop = desktopSrc || mobileSrc;
-  const actualMobile = mobileSrc || desktopSrc;
+  // Resolve desktop and mobile sources; fallback mobile to desktop if missing
+  const resolvedDesktop = resolveImageUrl(desktopSrc);
+  const resolvedMobile = resolveImageUrl(mobileSrc || desktopSrc, resolvedDesktop);
 
   return (
-    <picture className="absolute inset-0 -z-10 w-full h-full block">
+    <picture className="absolute inset-0 -z-10 w-full h-full block overflow-hidden">
       {/* Target mobile viewports (< 768px) with the mobile-specific source */}
-      <source media="(max-width: 767px)" srcSet={actualMobile} />
+      {resolvedMobile && <source media="(max-width: 767px)" srcSet={resolvedMobile} />}
       {/* Target larger viewports with the desktop source */}
-      <source media="(min-width: 768px)" srcSet={actualDesktop} />
-      <img src={actualDesktop} alt={alt} className={className} loading="eager" />
+      {resolvedDesktop && <source media="(min-width: 768px)" srcSet={resolvedDesktop} />}
+      <img src={resolvedDesktop || resolvedMobile} alt={alt} className={className} loading="eager" />
     </picture>
   );
 }
